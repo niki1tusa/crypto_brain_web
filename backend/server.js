@@ -1,6 +1,6 @@
 import express from 'express'
 import 'colors'
-import cors from 'cors'
+
 
 
 const app = express()
