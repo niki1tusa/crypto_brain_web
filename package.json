@@ -1,13 +1,16 @@
 {
-  "name": "crypto_brain_web",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-   "dev": ""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.10.0"
+ "name": "crypto_brain_web",
+ "version": "1.0.0",
+ "description": "",
+ "main": "index.js",
+ "scripts": {
+  "dev": "pnpm run --parallel --filter \"{frontend}\" --filter \"{backend}\" dev"
+ },
+ "keywords": [],
+ "author": "",
+ "license": "ISC",
+ "packageManager": "pnpm@10.10.0",
+ "devDependencies": {
+  "prettier": "^3.5.3"
+ }
 }
