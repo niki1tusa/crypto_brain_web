@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Input } from '../components/Input';
-
+import { Input } from '../Input';
+import styles from './form.module.scss'
+import { Button } from '../Button';
 function Form() {
 	const [formValue, setFormValue] = useState({
 		firstName: '',
@@ -14,7 +15,7 @@ function Form() {
 		setFormValue({ ...formValue, [e.target.name]: e.target.value });
 	return (
 		<div>
-			<form>
+			<form className={styles.form}>
 				<Input
 					id="First Name"
 					type="text"
@@ -45,6 +46,7 @@ function Form() {
 					value={formValue.password}
 					onChange={e => handlerOnChange(e)}
 				/>
+				<Button type="submit">Submit</Button>
 			</form>
 		</div>
 	);

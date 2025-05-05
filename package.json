@@ -1,9 +1,11 @@
 {
- "name": "crypto_brain_web",
+ "name": "app",
  "version": "1.0.0",
  "description": "",
  "main": "index.js",
  "scripts": {
+    "b": "pnpm --filter @app/backend",
+    "f": "pnpm --filter @app/frontend",
   "dev": "pnpm run --parallel --filter \"{frontend}\" --filter \"{backend}\" dev"
  },
  "keywords": [],

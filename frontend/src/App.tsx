@@ -1,13 +1,15 @@
-import Form from "./lib/form";
+
 
 
 function App() {
 
 	return (
-		<div>
-		<Form/>
-
-		</div>
+		<BrowserRouter>
+		<Routes>
+			<Route path={} element={<Home/>}/>
+			<Route path={} element={<SignUp/>}/>
+		</Routes>
+		</BrowserRouter>
 	);
 }
 
