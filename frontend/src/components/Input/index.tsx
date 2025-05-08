@@ -14,7 +14,7 @@ export const Input = ({
 	return (
 		<>
 			<label htmlFor={id}>{id}</label>
-			<input id={id} name={id} type={type} value={value} onChange={onChange} />
+			<input id={id} name={id.toLowerCase()} type={type} value={value} onChange={onChange} />
 		</>
 	);
 };

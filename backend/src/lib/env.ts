@@ -1,8 +1,11 @@
-require('dotenv').config()
-import z from "zod"
-import { zodFieldUtil } from "../utils/zodFieldUtil.ts"
+import {z} from "zod"
+import { zodFieldUtil } from "../utils/zodFieldUtil"
+import * as dotenv from 'dotenv'
+dotenv.config()
 
-export const env = z.object({
+ const zEnv = z.object({
     DATABASE_URL: zodFieldUtil,
     PORT: zodFieldUtil,
 })
+
+export const env = zEnv.parse(process.env)
