@@ -1,10 +1,11 @@
 import { prisma } from "../../lib/prisma";
 import { router, trpc } from "../../lib/trpcInit";
+import { hashedPasswordFnc } from "../../utils/hashedPassword";
 import { zodSchemaSignUp } from "./input";
-import bcrypt from 'bcryptjs'
 
 
-const signUp = trpc.procedure.input(zodSchemaSignUp).mutation(
+
+export const signUpTrpcRouter = trpc.procedure.input(zodSchemaSignUp).mutation(
     async({ctx, input})=>{
         // exists
     const existUser =  await  prisma.user.findUnique({
@@ -32,7 +33,7 @@ const existEmail =  await  prisma.user.findUnique({
      throw new Error('User this number is already exists!')
  }
 // hash
-const hashedPassword = await bcrypt.hash(input.password, 5)
+const hashPassword = await hashedPasswordFnc(input.password)
 
 
  const user = await prisma.user.create({
@@ -40,17 +41,14 @@ const hashedPassword = await bcrypt.hash(input.password, 5)
         name: input.name,
         email: input.email,
         phone: input.phone,
-        password: hashedPassword
+        password: hashPassword
     }
 })
 
 return {
-    id: user,
-    name: user.name
+    id: user.id,
+    name: user.name,
+    password: user.password
 }
     }
 )
-// router
-export const signUpRouter = router({
-    signUp
-})

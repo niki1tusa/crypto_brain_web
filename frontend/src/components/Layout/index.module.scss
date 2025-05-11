@@ -1,0 +1,12 @@
+@use "../../styles/variables" as var;
+
+.layout{
+    height: 100vh;
+    width: 100%;
+    color: white;
+    background-color: #131517;
+    font-family: var.$fontFamily;
+}
+button{
+    font-family: var.$fontFamily;
+}

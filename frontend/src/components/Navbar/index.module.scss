@@ -1,0 +1,36 @@
+@use '../../styles/variables' as var;
+.navBar {
+	background: var.$blackLight;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	font-size: var.$fontSize;
+    padding: 19px;
+}
+.hr {
+	background-color: var.$grey;
+	width: 1px;
+	border-left: 2px solid grey;
+	height: 30px;
+}
+.wrapperContent {
+	display: flex;
+	justify-content: space-between;
+	gap: 10%;
+	align-items: center;
+}
+a {
+	color: white;    
+    text-decoration: none;
+}
+button {
+	color: white;
+	background-color: var.$blue;
+	border: none;
+    border-radius: 2px;
+    margin: 2px;
+    padding: 2px;
+    min-width: 60px;
+    min-height: 40px;
+
+}

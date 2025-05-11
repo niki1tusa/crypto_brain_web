@@ -11,7 +11,8 @@ function Form() {
 		email: '',
 		password: '',
 	});
-	const signUpMutation = trpc.signUp.signUp.useMutation({
+
+	const signUpMutation = trpc.signUp.useMutation({
 		onSuccess: (data) => {
 			console.log('User created successfully:', data);
 			setSuccess(true);
