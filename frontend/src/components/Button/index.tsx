@@ -1,7 +1,18 @@
-import styles from './index.module.scss'
+import styles from './index.module.scss';
+import cn from 'classnames'
+export const Button = ({
+	children,
+	type = 'submit',
+  disabled = false
+}: {
+	children: string;
+	type?: 'submit' | 'reset';
+  disabled?: boolean
+}) => {
 
-export const Button = ({children, type}:{children: string; type: "submit" | "reset"}) => {
-  return (
-    <button type={type} className={styles.button}>{children}</button>
-  )
-}
+	return (
+		<button type={type} className={cn(styles.button, {[styles.disabled]: disabled})} disabled={disabled}>
+			{children}
+		</button>
+	);
+};

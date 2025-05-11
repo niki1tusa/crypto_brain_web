@@ -1,9 +1,32 @@
+@use '../../styles/variables' as var;
+@use "sass:color";
 .button{
     color: white;
     padding: 5px;
     margin: 5px;
-    background-color: black;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    font-family: var.$fontFamily;
+    cursor: pointer;
+     border: none;
+     outline: none;
+
+	background-color: var.$blue;
+	border: none;
+    border-radius: 2px;
+    min-width: 100px;
+    min-height: 40px;
+}
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: color.adjust(var.$blue, $lightness: -15%);
+    
+    /* Убираем эффекты при наведении и нажатии */
+    &:hover, &:active {
+        background-color: color.adjust(var.$blue, $lightness: 15%);
+        transform: none;
+    }
 }

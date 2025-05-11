@@ -1,14 +1,36 @@
-import styles from './index.module.scss'
-import { Outlet } from "react-router"
-import { Navbar } from "../Navbar"
-
+import styles from './index.module.scss';
+import { Outlet } from 'react-router';
+import { Navbar } from '../Navbar';
+import picture from '../../assets/logPicture.png';
 export const Layout = () => {
-  return (
-    <div className={styles.layout}>
-        <Navbar/>
-        <div>
-            <Outlet/>
-        </div>
-    </div>
-  )
-}
+	return (
+		<div className={styles.layout}>
+			<Navbar />
+			<div>
+				<Outlet />
+			</div>
+		</div>
+	);
+};
+
+export const LayoutForForm = ({
+	title,
+	children
+}: {
+	title: string;
+	children: React.ReactNode;
+}) => {
+	return (
+		<div className={styles.container}>
+			<h1 className={styles.heading}>{title}</h1>
+      <div className={styles.form}>
+        			<div>{children}</div>
+			<div>
+				<img src={picture} alt="picture" />
+			</div>
+      </div>
+    
+			<div style={{color: 'grey'}}>©Copyright 2025 All Rights Are Reserved.</div>
+		</div>
+	);
+};

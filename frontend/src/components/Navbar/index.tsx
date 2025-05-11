@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router"
 import styles from './index.module.scss'
 import logo from '../../assets/Logo.svg'
+import { Button } from "../Button"
 
 interface Children {
   children: React.ReactNode
@@ -24,8 +25,8 @@ export const Navbar = () => {
    </Wrapper>
    
     <Wrapper>
-    <Link to="/sign-up"><button>Sign Up</button></Link>
-    <Link to="/sign-in"><button>Sign In</button></Link>
+    <Link to="/sign-up"><Button>Sign Up</Button></Link>
+    <Link to="/sign-in"><Button>Sign In</Button></Link>
     </Wrapper>
     </nav>
   )

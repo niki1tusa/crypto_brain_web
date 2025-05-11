@@ -1,0 +1,54 @@
+@use '../../styles/variables' as var;
+.inputContainer{
+  position: relative;
+}
+.eyePasswordBtn{
+      cursor: pointer;
+     border: none;
+     outline: none;
+     background: inherit;
+     color: white;
+}
+.eyePassword{
+  position: absolute;
+  top: 43px;
+  right: 10px;
+}
+.input {
+	cursor: pointer;
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.233);
+    border-radius: 2px;
+    min-width: 300px;
+    min-height: 60px;
+    color: rgba(255, 255, 255, 0.233);
+    padding-left: 5px;
+   font-family: var.$fontFamily;
+   transition: all 0.2s ease; 
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  }
+  
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+  
+  // Адаптивность
+  @media (max-width: var.$breakpoint-md) {
+    min-width: 150px; // Уменьшаем минимальную ширину на мобильных
+    width: 100%; // Растягиваем на всю доступную ширину
+  }
+  
+  @media (max-width: var.$breakpoint-sm) {
+    min-height: 36px; // Немного уменьшаем высоту на маленьких экранах
+    font-size: 14px; // Уменьшаем размер шрифта
+  }
+
+
+}

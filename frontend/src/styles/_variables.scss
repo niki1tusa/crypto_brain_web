@@ -4,6 +4,7 @@
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 // color
 $grey: #ADB3BF;
@@ -15,5 +16,12 @@ $fontFamily: "Source Sans 3", sans-serif;
 $regular: 400;
 $semiBold: 600;
 $bold: 700;
-$fontSize: 16px
+$fontSize: 16px;
 // Arial Bold useless 2 times
+
+
+// media
+$breakpoint-sm: 480px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1200px;
