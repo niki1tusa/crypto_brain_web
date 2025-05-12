@@ -6,6 +6,8 @@ dotenv.config()
  const zEnv = z.object({
     DATABASE_URL: zodFieldUtil,
     PORT: zodFieldUtil,
+    API_CRYPTO_TOKEN: zodFieldUtil,
+    
 })
 
 export const env = zEnv.parse(process.env)
