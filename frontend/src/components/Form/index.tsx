@@ -14,13 +14,15 @@ function Form({
 	password = '',
 	router,
 	disabled,
+	successMessage,
 }: {
 	name?: string;
 	phone?: string;
 	email?: string;
 	password?: string;
 	router?: TRPCRouterKey;
-	disabled?: boolean
+	disabled?: boolean;
+	successMessage?: string
 }) {
 	const [success, setSuccess] = useState(false);
 	const [error, setError] = useState('')
@@ -33,7 +35,7 @@ function Form({
 	const dynamicTrpc = trpc[router]
 	const mutation = dynamicTrpc.useMutation({
 		onSuccess: data => {
-			console.log('User created successfully:', data);
+			console.log(successMessage, data);
 			setSuccess(true);
 			// Очистка формы после успешной отправки
 			setFormValue({
@@ -42,6 +44,9 @@ function Form({
 				email: '',
 				password: ''
 			});
+			setTimeout(()=>{
+				setSuccess(false)
+			}, 3000)
 		},
 		onError: error => {
 			setError(`Error creating user`);
@@ -56,7 +61,7 @@ function Form({
 					e.preventDefault();
 				if(mutation){
 						mutation.mutate(formValue);
-					console.log('user is create!');
+					console.log(successMessage);
 				} else {
 					throw new Error('мутация не найдена')
 				}
@@ -99,7 +104,7 @@ function Form({
 					/>
 				)}
 				{error && <div>{error}</div>}
-				{success && <div>User is !</div>}
+				{success && <div className={styles.successMessage}> {successMessage}</div>}
 				<Button type="submit" disabled={disabled}>Submit</Button>
 			</form>
 

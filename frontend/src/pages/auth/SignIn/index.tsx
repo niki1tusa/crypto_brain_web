@@ -5,7 +5,7 @@ import { LayoutForForm } from '../../../components/Layout';
 const SignIn = () => {
 	return (
 		<LayoutForForm title="Sign In">
-			<Form name="name" password="password" router="signIn" />
+			<Form name="name" password="password" router="signIn" successMessage='User is true!'/>
 			<div style={{ fontSize: 14, marginTop: 30 }}>
 				<Link to="/reset-password-email">
 					<b>Forgot Passowrd?</b>

@@ -14,6 +14,7 @@ const SignUp = () => {
 				password="password"
 				router="signUp"
 				disabled={isDisabled}
+				successMessage="User is success created!"
 			/>
 			<div style={{ fontSize: 14, marginTop: 30 }}>
 				<input
