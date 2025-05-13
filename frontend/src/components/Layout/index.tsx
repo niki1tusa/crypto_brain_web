@@ -26,11 +26,11 @@ export const LayoutForForm = ({
       <div className={styles.form}>
         			<div>{children}</div>
 			<div>
-				<img src={picture} alt="picture" />
+				<img className={styles.image} src={picture} alt="picture" />
 			</div>
       </div>
     
-			<div style={{color: 'grey'}}>©Copyright 2025 All Rights Are Reserved.</div>
+			<div className={styles.copyright}>©Copyright 2025 All Rights Are Reserved.</div>
 		</div>
 	);
 };

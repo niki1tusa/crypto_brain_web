@@ -1,26 +1,57 @@
 @use "../../styles/variables" as var;
 
-.layout{
-    height: 100vh;
+.layout {
+    min-height: 100vh;
     width: 100%;
     color: white;
     background-color: #131517;
     font-family: var.$fontFamily;
 }
 
-.container{
+.container {
     margin-top: 3%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
-.form{
+
+.form {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20%;
+    width: 100%;
+    max-width: 1200px;
+    
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 30px;
+    }
 }
-.heading{
-    font-size: 40px
+
+.heading {
+    font-size: 40px;
+    
+    @media (max-width: 768px) {
+        font-size: 28px;
+    }
+}
+
+.copyright {
+    margin-top: 20px;
+    color: grey;
+    text-align: center;
+}
+
+.image {
+    max-width: 100%;
+    height: auto;
+    
+    @media (max-width: 768px) {
+        max-width: 80%;
+        margin: 0 auto;
+    }
 }
