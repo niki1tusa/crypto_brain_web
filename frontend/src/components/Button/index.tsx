@@ -1,3 +1,4 @@
+
 import styles from './index.module.scss';
 import cn from 'classnames'
 export const Button = ({
@@ -5,7 +6,7 @@ export const Button = ({
 	type = 'submit',
   disabled = false
 }: {
-	children: string;
+	children: React.ReactNode;
 	type?: 'submit' | 'reset';
   disabled?: boolean
 }) => {
