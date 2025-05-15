@@ -109,6 +109,7 @@ export const Footer: React.FC = () => {
 			/>
 			</div>	
 							<div className={styles.hr}/>
+
 							<div className={styles.languageSelector}>
 								<p>Язык:</p>
 								<div className={styles.languageButtons}>

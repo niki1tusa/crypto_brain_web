@@ -1,24 +1,6 @@
 @use '../../styles/variables' as var;
 @use "sass:color";
-.button{
-    color: white;
-    padding: 5px;
-    margin: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
-    font-family: var.$fontFamily;
-    cursor: pointer;
-     border: none;
-     outline: none;
-
-	background-color: var.$blue;
-	border: none;
-    border-radius: 2px;
-    min-width: 100px;
-    min-height: 40px;
-}
 .disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -29,4 +11,62 @@
         background-color: color.adjust(var.$blue, $lightness: 15%);
         transform: none;
     }
+}
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(145deg, #2a2b33, #232429);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
+  text-align: center;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: all 0.4s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.3);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  &.active {
+    background: linear-gradient(145deg, #0066cc, #0052a3);
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 102, 204, 0.4);
+    
+    &:hover {
+      background: linear-gradient(145deg, #0074e0, #0059b3);
+      box-shadow: 0 7px 12px rgba(0, 102, 204, 0.5);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
 }

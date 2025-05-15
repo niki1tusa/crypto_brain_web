@@ -3,12 +3,15 @@ import { Outlet } from 'react-router';
 import { Navbar } from '../Navbar';
 import picture from '../../assets/logPicture.png';
 import { CopyRight } from '../CopyRigth';
+import { AiOutlineLoading } from 'react-icons/ai'
+
 export const Layout = () => {
+
 	return (
 		<div className={styles.layout}>
 			<Navbar />
 			<div>
-				<Outlet />
+			<Outlet />
 			</div>
 		</div>
 	);

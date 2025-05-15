@@ -1,3 +1,4 @@
-*adding error message ui for From as ui success message and add styles scss;
 *add adaptive ui for navbar;
 * при клике на глазок выскакивает ошибка, возможно после клика на глазок происходит отправка формы?
+*сделать компонент группы кнопок и одиннокую кнопку
+*create component loading for layout
