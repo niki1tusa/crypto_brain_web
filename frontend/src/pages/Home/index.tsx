@@ -76,18 +76,23 @@ const Home = () => {
 	  if (isLoading) return <div>Загрузка...</div>;
   if (error) return <div>Ошибка: {error}</div>;
 	return (
-		<div className={styles.container}>
+		<div>
+				<div className={styles.container}>
 			<div >
 				<Title>Buy & Sell Crypto Easy With Crypto Brains</Title>
         <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
         <img src={line} alt="line" />
+		<div className={styles.btnContainer}>
 		<Button>Start Now <img src={arrowSvg} alt="arrow" /></Button>
         <Button>Beginner’s Guide</Button>
+		</div>
 			</div>
 			<div>
 				<img className={styles.image} src={header} alt="header" />
 			</div>
-			<ul className={styles.cryptoList}>
+			</div>
+			<div >
+						<ul className={styles.cryptoList}>
 				{listing.map((item) => (
 					<li key={`crypto-${item.id}`} className={styles.cryptoItem}>
 						{/* Check if logo data exists for this cryptocurrency */}
@@ -98,15 +103,20 @@ const Home = () => {
 								className={styles.cryptoLogo} 
 							/>
 						)}
-						<span >{item.symbol}</span>
+						<div>
+						<span >{item.symbol}</span>/
 						<span >{item.name}</span>
-						<span >
+						</div>/
+						<span>
 							${item.quote.USD.price.toFixed(2)}
 						</span>
 					</li>
 				))}
-			</ul>
+			</ul>	
+			</div>
 		</div>
+	
+		
 	);
 };
 

@@ -15,6 +15,7 @@ const SignUp = () => {
 				router="signUp"
 				disabled={isDisabled}
 				successMessage="User is success created!"
+				errorMessage='Error: This is not correctly data in field!'
 			/>
 			<div style={{ fontSize: 14, marginTop: 30 }}>
 				<input

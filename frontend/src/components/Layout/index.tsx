@@ -2,6 +2,7 @@ import styles from './index.module.scss';
 import { Outlet } from 'react-router';
 import { Navbar } from '../Navbar';
 import picture from '../../assets/logPicture.png';
+import { CopyRight } from '../CopyRigth';
 export const Layout = () => {
 	return (
 		<div className={styles.layout}>
@@ -30,7 +31,7 @@ export const LayoutForForm = ({
 			</div>
       </div>
     
-			<div className={styles.copyright}>©Copyright 2025 All Rights Are Reserved.</div>
+			<CopyRight/>
 		</div>
 	);
 };

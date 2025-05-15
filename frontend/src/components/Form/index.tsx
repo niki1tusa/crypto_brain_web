@@ -15,6 +15,7 @@ function Form({
 	router,
 	disabled,
 	successMessage,
+	errorMessage,
 }: {
 	name?: string;
 	phone?: string;
@@ -22,10 +23,11 @@ function Form({
 	password?: string;
 	router?: TRPCRouterKey;
 	disabled?: boolean;
-	successMessage?: string
+	successMessage?: string;
+	errorMessage?: string;
 }) {
 	const [success, setSuccess] = useState(false);
-	const [error, setError] = useState('')
+	const [error, setError] = useState(false)
 	const [formValue, setFormValue] = useState({
 		name: '',
 		phone: '',
@@ -49,7 +51,10 @@ function Form({
 			}, 3000)
 		},
 		onError: error => {
-			setError(`Error creating user`);
+			setError(true);
+			setTimeout(()=>{
+				setError(false)
+			}, 3000)
 		}
 	});
 	const handlerOnChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -103,7 +108,7 @@ function Form({
 						onChange={e => handlerOnChange(e)}
 					/>
 				)}
-				{error && <div>{error}</div>}
+				{error && <div className={styles.errorMessage}>{errorMessage}</div>}
 				{success && <div className={styles.successMessage}> {successMessage}</div>}
 				<Button type="submit" disabled={disabled}>Submit</Button>
 			</form>
