@@ -42,7 +42,7 @@
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 7px 10px rgba(0, 0, 0, 0.3);
-    
+
     &::before {
       left: 100%;
     }
@@ -63,7 +63,6 @@
       box-shadow: 0 7px 12px rgba(0, 102, 204, 0.5);
     }
   }
-  
   @media (max-width: 768px) {
     padding: 8px 16px;
     min-width: 100px;
