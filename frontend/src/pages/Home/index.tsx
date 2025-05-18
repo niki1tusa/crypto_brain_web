@@ -6,6 +6,7 @@ import arrowSvg from '../../assets/arrowHeader.svg';
 import { useEffect, useState } from 'react';
 import line from '../../assets/Line.svg';
 import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
+import { Loader } from '../../components/Loader';
 // Define types for API data
 interface CryptoListing {
 	id: number;
@@ -62,15 +63,21 @@ const Home = () => {
 				}
 				const logoInfo = await resLogo.json();
 				setLogoData(logoInfo.data || {});
-			} catch (error: any) {
-				setError(error.message);
+			} catch (error: unknown) {
+				// Проверяем, является ли ошибка экземпляром Error
+				if(error instanceof Error){
+					setError(error.message);
+				} else{
+					setError(String(error))
+				}
+				
 			} finally {
 				setIsLoading(false);
 			}
 		}
 		fetchCryptoData();
 	}, []);
-	if (isLoading) return <div>Загрузка...</div>;
+	if (isLoading) return <Loader/>;
 	if (error) return <div>Ошибка: {error}</div>;
 	return (
 		<div>
@@ -111,12 +118,12 @@ const Home = () => {
 							<div className={styles.cryptoItemElem}>
 								<div className={styles.cryptoItemName}>
 									<div>{item.symbol}</div>
-									<div
+									<div 
 										style={{
 											color: `${item.quote.USD.percent_change_24h > 0 ? 'green' : 'red'}`
 										}}
 									>
-										{item.quote.USD.percent_change_24h > 0 ?
+									{item.quote.USD.percent_change_24h > 0 ?
 											<FaArrowTrendUp />
 										:	<FaArrowTrendDown />}
 										{Math.abs(item.quote.USD.percent_change_24h).toFixed(2)}%
