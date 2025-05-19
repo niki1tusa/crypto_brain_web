@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './index.module.scss';
 import logo from '../../assets/Logo.svg';
 import { CopyRight } from '../CopyRigth';
-
+import { ThemeSwitcher } from '../ThemeSwitcher';
 const ListComponent = ({ title, text }: { title: string; text: string[] }) => {
 	return (
 		<ul className={styles.list}>
@@ -55,6 +55,7 @@ export const Footer: React.FC = () => {
 				);
 			};
 		}
+	
 
 		// Small delay to ensure widget is loaded
 		setTimeout(() => {
@@ -136,7 +137,7 @@ export const Footer: React.FC = () => {
 						English
 					</button>
 				</div>
-			</div>
+			</div>		
 			<CopyRight />
 		</footer>
 	);
