@@ -2,7 +2,7 @@ import styles from './index.module.scss';
 import { Outlet } from 'react-router';
 import { Navbar } from '../Navbar';
 import picture from '../../assets/logPicture.png';
-import { CopyRight } from '../CopyRigth';
+
 import { AiOutlineLoading } from 'react-icons/ai'
 
 export const Layout = () => {
@@ -33,8 +33,7 @@ export const LayoutForForm = ({
 				<img className={styles.image} src={picture} alt="picture" />
 			</div>
       </div>
-    
-			<CopyRight/>
+
 		</div>
 	);
 };
