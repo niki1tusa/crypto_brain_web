@@ -44,7 +44,7 @@ export const Navbar = () => {
         
         <Link to="/" className={styles.link}>Home</Link>
 				<a href="*" className={styles.link}>Market</a>
-				<a href="*" className={styles.link}>Trade</a>
+				<a href="/trade" className={styles.link}>Trade</a>
 				<a href="*" className={styles.link}>Earn</a>
 				<a href="*" className={styles.link}>About</a>
 				<a href="*" className={styles.link}>Career</a>

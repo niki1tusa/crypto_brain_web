@@ -10,6 +10,7 @@ import {
 	NewPassword
 } from './pages/auth/ForgotPassword';
 import { Footer } from './components/Footer';
+import { TradePages } from './pages/TradePages';
 
 function App() {
 	return (
@@ -32,6 +33,7 @@ function App() {
 							path="/new-password"
 							element={<NewPassword />}
 						/>
+						<Route path='/trade' element={<TradePages/>}/>
 					</Route>
 				</Routes>
 				<Footer/>

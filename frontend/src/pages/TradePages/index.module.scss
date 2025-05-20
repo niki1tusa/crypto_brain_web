@@ -1,0 +1,12 @@
+@use '../../styles/variables' as var;
+.tradeContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.hr{
+  	background-color: var.$grey;
+	width: 80%;
+	border-left: 2px solid rgb(255, 255, 255);
+	height: 1px;   
+}

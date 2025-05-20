@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import line from '../../assets/Line.svg';
 import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
 import { Loader } from '../../components/Loader';
+import { CryptoList } from '../../components/CryptoList';
 // Define types for API data
 interface CryptoListing {
 	id: number;
@@ -105,37 +106,7 @@ const Home = () => {
 				</div>
 			</div>
 			<div>
-				<ul className={styles.cryptoList}>
-					{listing.map(item => (
-						<li key={`crypto-${item.id}`} className={styles.cryptoItem}>
-							{logoData[item.id] && (
-								<img
-									src={logoData[item.id].logo}
-									alt={`${item.name} logo`}
-									className={styles.cryptoLogo}
-								/>
-							)}
-							<div className={styles.cryptoItemElem}>
-								<div className={styles.cryptoItemName}>
-									<div>{item.symbol}</div>
-									<div 
-										style={{
-											color: `${item.quote.USD.percent_change_24h > 0 ? 'green' : 'red'}`
-										}}
-									>
-									{item.quote.USD.percent_change_24h > 0 ?
-											<FaArrowTrendUp />
-										:	<FaArrowTrendDown />}
-										{Math.abs(item.quote.USD.percent_change_24h).toFixed(2)}%
-									</div>
-								</div>
-								<div>
-									<span>${item.quote.USD.price.toFixed(2)}</span>
-								</div>
-							</div>
-						</li>
-					))}
-				</ul>
+			<CryptoList listing={listing} logoData={logoData}/>
 			</div>
 		</div>
 	);
