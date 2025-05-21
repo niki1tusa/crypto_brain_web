@@ -7,13 +7,14 @@ import line from '../../assets/Line.svg';
 import { Loader } from '../../components/Loader';
 import { CryptoList } from '../../components/CryptoList';
 import { useCrypto } from '../../context';
+import { ErrorComponent } from '../../components/Error';
 
 const Home = () => {
 
 	const { isLoading, error, listing, logoData } = useCrypto();
 
 	if (isLoading) return <Loader />
-	if (error) return <div>Ошибка: {error}</div>;
+	if (error) return <ErrorComponent/>;
 	return (
 		<div>
 			<div className={styles.container}>
