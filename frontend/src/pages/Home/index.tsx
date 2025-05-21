@@ -7,7 +7,7 @@ import line from '../../assets/Line.svg';
 import { Loader } from '../../components/Loader';
 import { CryptoList } from '../../components/CryptoList';
 import { useCrypto } from '../../context';
-import { ErrorComponent } from '../../components/Error';
+import { ErrorComponent } from '../../components/ErrorComponent';
 
 const Home = () => {
 

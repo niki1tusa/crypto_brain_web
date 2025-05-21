@@ -2,13 +2,23 @@ import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
 import styles from './index.module.scss';
 import { CryptoInfo, CryptoListing } from '../../context';
 
-export const CryptoList = ({ listing, logoData, index, className }:{listing: CryptoListing[], logoData: CryptoInfo, index: number, className?: string}) => {
+
+interface CryptoListType{
+	listing: CryptoListing[], 
+	logoData: CryptoInfo, 
+	index: number, 
+	className?: string,
+	classNameItem?: string
+}
+
+export const CryptoList = ({ listing, logoData, index, className, classNameItem}: CryptoListType) => {
 	const styleClass = className? styles.className: styles.cryptoList;
+	const styleCryptoItem = classNameItem? styles.classNameItem : styles.cryptoItem
 	return (
 		<ul className={styleClass}>
 			{listing.map((item, i) => {
 			 if (i < index) {
-					return(<li key={`crypto-${item.id}`} className={styles.cryptoItem}>
+					return(<li key={`crypto-${item.id}`} className={styleCryptoItem}>
 						{logoData[item.id] && (
 							<img
 								src={logoData[item.id].logo}

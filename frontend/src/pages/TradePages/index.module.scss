@@ -11,19 +11,18 @@
 	height: 1px;   
 }
 .cryptoListTradePages{
-  display: flex;
-  flex-direction: column;
-  display: flex;
-  list-style-type: none;
+  // display: flex;
+  // flex-direction: column;
+  // list-style-type: none;
   padding: 20px;
   margin: 40px 10% 20px;
   border-radius: 12px;
   justify-content: space-around;
   flex-wrap: wrap;
   gap: 15px;
-  padding: 20px;
-  margin: 40px 10% 20px;
-  border-radius: 12px;
-  justify-content: space-around;
-  gap: 15px;
+  
+}
+.cryptoItemForTradePage{
+
+
 }
