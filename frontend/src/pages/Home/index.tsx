@@ -3,82 +3,16 @@ import { Button } from '../../components/Button';
 import { Title } from '../../components/Title';
 import styles from './index.module.scss';
 import arrowSvg from '../../assets/arrowHeader.svg';
-import { useEffect, useState } from 'react';
 import line from '../../assets/Line.svg';
-import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
 import { Loader } from '../../components/Loader';
 import { CryptoList } from '../../components/CryptoList';
-// Define types for API data
-interface CryptoListing {
-	id: number;
-	name: string;
-	symbol: string;
-	quote: {
-		USD: {
-			price: number;
-			percent_change_24h: number;
-		};
-	};
-}
-
-interface CryptoInfo {
-	[key: string]: {
-		id: number;
-		name: string;
-		symbol: string;
-		logo: string;
-		urls: {
-			website: string[];
-			twitter: string[];
-			reddit: string[];
-			message_board: string[];
-			chat: string[];
-			explorer: string[];
-			source_code: string[];
-		};
-	};
-}
+import { useCrypto } from '../../context';
 
 const Home = () => {
-	const [listing, setListing] = useState<CryptoListing[]>([]);
-	const [logoData, setLogoData] = useState<CryptoInfo>({});
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState<string | null>(null);
-	useEffect(() => {
-		async function fetchCryptoData() {
-			try {
-				// Get cryptocurrency listing data
-				const res = await fetch('http://localhost:5000/api/crypto/listings');
-				if (!res.ok) {
-					const errorData = await res.json();
-					throw new Error(errorData.error || 'Error fetching listing data');
-				}
-				const listingData = await res.json();
-				setListing(listingData.data || []);
 
-				// Get logo and info data
-				const resLogo = await fetch('http://localhost:5000/api/crypto/info');
-				if (!resLogo.ok) {
-					const errorData = await resLogo.json();
-					throw new Error(errorData.error || 'Error fetching logo data');
-				}
-				const logoInfo = await resLogo.json();
-				setLogoData(logoInfo.data || {});
-			} catch (error: unknown) {
-				// Проверяем, является ли ошибка экземпляром Error
-				if(error instanceof Error){
-					setError(error.message);
-				} else{
-					setError(String(error))
-				}
-				
-			} finally {
-				setIsLoading(false);
-			}
-		}
-		fetchCryptoData();
-	}, []);
-	if (isLoading) return <Loader/>;
+	const { isLoading, error, listing, logoData } = useCrypto();
+
+	if (isLoading) return <Loader />
 	if (error) return <div>Ошибка: {error}</div>;
 	return (
 		<div>
@@ -106,7 +40,7 @@ const Home = () => {
 				</div>
 			</div>
 			<div>
-			<CryptoList listing={listing} logoData={logoData}/>
+				<CryptoList listing={listing} logoData={logoData} index={10}/>
 			</div>
 		</div>
 	);

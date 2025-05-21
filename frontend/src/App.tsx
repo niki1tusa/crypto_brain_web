@@ -11,32 +11,32 @@ import {
 } from './pages/auth/ForgotPassword';
 import { Footer } from './components/Footer';
 import { TradePages } from './pages/TradePages';
+import { CryptoProvider } from './context';
 
 function App() {
 	return (
 		<TRPCProvider>
 			<BrowserRouter>
-				<Routes>
-					<Route element={<Layout />}>
-						<Route path="/" element={<Home />} />
-						<Route path="/sign-up" element={<SignUp />} />
-						<Route path="/sign-in" element={<SignIn />} />
-						<Route
-							path="/reset-password-email"
-							element={<ForgotPasswordEmail />}
-						/>
-						<Route
-							path="/reset-password-phone"
-							element={<ForgotPasswordPhone />}
-						/>
-						<Route
-							path="/new-password"
-							element={<NewPassword />}
-						/>
-						<Route path='/trade' element={<TradePages/>}/>
-					</Route>
-				</Routes>
-				<Footer/>
+				<CryptoProvider>
+					<Routes>
+						<Route element={<Layout />}>
+							<Route path="/" element={<Home />} />
+							<Route path="/sign-up" element={<SignUp />} />
+							<Route path="/sign-in" element={<SignIn />} />
+							<Route
+								path="/reset-password-email"
+								element={<ForgotPasswordEmail />}
+							/>
+							<Route
+								path="/reset-password-phone"
+								element={<ForgotPasswordPhone />}
+							/>
+							<Route path="/new-password" element={<NewPassword />} />
+							<Route path="/trade" element={<TradePages />} />
+						</Route>
+					</Routes>
+					<Footer />
+				</CryptoProvider>
 			</BrowserRouter>
 		</TRPCProvider>
 	);

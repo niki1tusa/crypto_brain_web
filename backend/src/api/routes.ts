@@ -65,7 +65,7 @@ interface CryptoInfoData {
 router.get('/listings', async (req, res) => {
     try {
         const url = new URL(`${tokenDomain}/v1/cryptocurrency/listings/latest`); 
-        url.searchParams.append('limit', '10')
+        // url.searchParams.append('limit', '10')
 
 
         // Ensure API key is properly set
@@ -118,7 +118,7 @@ router.get('/info', async (req, res) => {
   
       // First get the list of top 10 cryptocurrencies
       const listingsUrl = new URL(`${tokenDomain}/v1/cryptocurrency/listings/latest`);
-      listingsUrl.searchParams.append('limit', '10');
+      // listingsUrl.searchParams.append('limit', '10');
 
       const headers = {
         'X-CMC_PRO_API_KEY': apiKey.trim(),
