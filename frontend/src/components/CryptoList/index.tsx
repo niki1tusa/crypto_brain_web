@@ -12,8 +12,8 @@ interface CryptoListType{
 }
 
 export const CryptoList = ({ listing, logoData, index, className, classNameItem}: CryptoListType) => {
-	const styleClass = className? styles.className: styles.cryptoList;
-	const styleCryptoItem = classNameItem? styles.classNameItem : styles.cryptoItem
+const styleClass = className || styles.cryptoList;
+const styleCryptoItem = classNameItem || styles.cryptoItem;
 	return (
 		<ul className={styleClass}>
 			{listing.map((item, i) => {
