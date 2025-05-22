@@ -10,6 +10,7 @@ export interface CryptoListing {
 			price: number;
 			percent_change_24h: number;
             volume_24h: number;
+            market_cap: number;
 		};
 	};
 }
