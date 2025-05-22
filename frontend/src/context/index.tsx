@@ -1,4 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { string } from "zod";
 
 // Define types for API data
 export interface CryptoListing {
@@ -40,6 +42,7 @@ interface CryptoContextType {
     isLoading: boolean;
     error: string | null;
     refreshData: () => Promise<void>;
+    handlerNav: () => Promise<void>
 }
 interface CryptoProviderProps {
     children: ReactNode;
@@ -50,7 +53,8 @@ const CryptoContext = createContext<CryptoContextType>({
     logoData: {},
     isLoading: true,
     error: null,
-    refreshData: async () => {}
+    refreshData: async () => {},
+    handlerNav: async () => {}
 });
 
 export const CryptoProvider: React.FC<CryptoProviderProps> = ({children}) => {
@@ -58,7 +62,10 @@ export const CryptoProvider: React.FC<CryptoProviderProps> = ({children}) => {
     const [logoData, setLogoData] = useState<CryptoInfo>({});
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    const navigate = useNavigate()
+    const handlerNavigate = async(id) => {
+       await navigate(`/${id}`)
+    }
     const fetchCryptoData = async() => {
         // Reset state for new request
         setIsLoading(true);
@@ -103,7 +110,8 @@ export const CryptoProvider: React.FC<CryptoProviderProps> = ({children}) => {
         logoData,
         isLoading,
         error,
-        refreshData: fetchCryptoData
+        refreshData: fetchCryptoData,
+        handlerNav: handlerNavigate
     };
     
     return (

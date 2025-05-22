@@ -1,11 +1,12 @@
 import { useState, useMemo, useCallback } from 'react';
-import { CryptoList } from '../../components/CryptoList';
-import { ErrorComponent } from '../../components/ErrorComponent';
-import { Loader } from '../../components/Loader';
-import { Title } from '../../components/Title';
-import { useCrypto } from '../../context';
+import { CryptoList } from '../../../components/CryptoList';
+import { ErrorComponent } from '../../../components/ErrorComponent';
+import { Loader } from '../../../components/Loader';
+import { Title } from '../../../components/Title';
+import { useCrypto } from '../../../context';
 import styles from './index.module.scss';
 import { CryptoListComponent } from './CryptoListComponent';
+import { FilterPanel } from './FilterPanel';
 
 // Enum for sort fields
 enum SortField {
@@ -26,8 +27,6 @@ interface SortConfig {
 
 interface Filters {
   name: string;
-  minPrice?: number;
-  maxPrice?: number;
 }
 
 // Default constants
@@ -38,9 +37,7 @@ export const TradePages = () => {
 	const { isLoading, error, listing, logoData } = useCrypto();
 	
 	// Filter state
-	const [filters, setFilters] = useState<Filters>({
-		name: '',
-	});
+	const [filters, setFilters] = useState<Filters>({	name: '' });
 	
 	// Sort state
 	const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -90,12 +87,10 @@ export const TradePages = () => {
 					comparison = 0;
 			}
 			
-			// Invert result for descending sort
 			return sortConfig.direction === 'asc' ? comparison : -comparison;
 		});
 	}, [filteredListing, sortConfig]);
 
-	// Handler for name filter change with useCallback
 	const handleNameFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		setFilters(prev => ({
 			...prev,
@@ -103,17 +98,14 @@ export const TradePages = () => {
 		}));
 	}, []);
 
-	// Handler for sorting with useCallback
 	const handleSort = useCallback((field: SortField) => {
 		setSortConfig((prevConfig) => {
-			// If same field, toggle direction
 			if (prevConfig.field === field) {
 				return {
 					...prevConfig,
 					direction: prevConfig.direction === 'asc' ? 'desc' : 'asc',
 				};
 			}
-			// If new field, set it with default direction
 			return {
 				field,
 				direction: DEFAULT_SORT_DIRECTION,
@@ -121,13 +113,11 @@ export const TradePages = () => {
 		});
 	}, []);
 
-	// Get icon for current sort direction
 	const getSortIcon = useCallback((field: SortField) => {
 		if (sortConfig.field !== field) return null;
 		return sortConfig.direction === 'asc' ? '▲' : '▼';
 	}, [sortConfig]);
 
-	// Render loading and error states
 	if (isLoading) return <Loader />;
 	if (error) return <ErrorComponent />;
 	return (
@@ -150,45 +140,8 @@ export const TradePages = () => {
 				</div>
 				
 				{/* Filter and sort panel */}
-				<div className={styles.filterPanel}>
-					<button 
-						type="button" 
-						onClick={() => handleSort(SortField.Name)}
-						className={sortConfig.field === SortField.Name ? styles.activeSort : ''}
-					>
-						Name {getSortIcon(SortField.Name)}
-					</button>
-					<button 
-						type="button" 
-						onClick={() => handleSort(SortField.Price)}
-						className={sortConfig.field === SortField.Price ? styles.activeSort : ''}
-					>
-						Price {getSortIcon(SortField.Price)}
-					</button>
-					<button 
-						type="button" 
-						onClick={() => handleSort(SortField.Change24h)}
-						className={sortConfig.field === SortField.Change24h ? styles.activeSort : ''}
-					>
-						24h Change {getSortIcon(SortField.Change24h)}
-					</button>
-					<button 
-						type="button" 
-						onClick={() => handleSort(SortField.Volume24h)}
-						className={sortConfig.field === SortField.Volume24h ? styles.activeSort : ''}
-					>
-						24h Volume {getSortIcon(SortField.Volume24h)}
-					</button>
-					<button 
-						type="button" 
-						onClick={() => handleSort(SortField.MarketCap)}
-						className={sortConfig.field === SortField.MarketCap ? styles.activeSort : ''}
-					>
-						Market Cap {getSortIcon(SortField.MarketCap)}
-					</button>
-					<div>Trade</div>
-				</div>
-				
+				<FilterPanel handleSort={handleSort} SortField={SortField} sortConfig={sortConfig} getSortIcon={getSortIcon}/>
+
 				{/* Display filtered and sorted list */}
 				{filteredAndSortedListing.length > 0 ? (
 					<CryptoListComponent

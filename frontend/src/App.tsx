@@ -10,8 +10,9 @@ import {
 	NewPassword
 } from './pages/auth/ForgotPassword';
 import { Footer } from './components/Footer';
-import { TradePages } from './pages/TradePages';
+import { TradePages } from './pages/Trade/TradePages';
 import { CryptoProvider } from './context';
+import { TradeOnlyCurrencyPage } from './pages/Trade/TradeOnlyCurrencyPage';
 
 function App() {
 	return (
@@ -33,6 +34,7 @@ function App() {
 							/>
 							<Route path="/new-password" element={<NewPassword />} />
 							<Route path="/trade" element={<TradePages />} />
+							<Route path='/trade/trade-only' element={<TradeOnlyCurrencyPage/>}/> 
 						</Route>
 					</Routes>
 					<Footer />
