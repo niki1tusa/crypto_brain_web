@@ -1,10 +1,11 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { CryptoList } from '../../components/CryptoList';
 import { ErrorComponent } from '../../components/ErrorComponent';
 import { Loader } from '../../components/Loader';
 import { Title } from '../../components/Title';
 import { useCrypto } from '../../context';
 import styles from './index.module.scss';
+import { CryptoListComponent } from './cryptoListComponent';
 
 // Types for filters and sorting
 type SortDirection = 'asc' | 'desc';
@@ -49,43 +50,43 @@ export const TradePages = () => {
 			);
 		}
 		
-		// Filter by minimum price
-		if (filters.minPrice !== undefined) {
-			result = result.filter(item => item.quote.USD.price >= filters.minPrice);
-		}
+		// // Filter by minimum price
+		// if (filters.minPrice !== undefined) {
+		// 	result = result.filter(item => item.quote.USD.price >= filters.minPrice);
+		// }
 		
-		// Filter by maximum price
-		if (filters.maxPrice !== undefined) {
-			result = result.filter(item => item.quote.USD.price <= filters.maxPrice);
-		}
+		// // Filter by maximum price
+		// if (filters.maxPrice !== undefined) {
+		// 	result = result.filter(item => item.quote.USD.price <= filters.maxPrice);
+		// }
 		
-		// Step 2: Apply sorting
-		result.sort((a, b) => {
-			let comparison = 0;
+		// // Step 2: Apply sorting
+		// result.sort((a, b) => {
+		// 	let comparison = 0;
 			
-			switch (sortConfig.field) {
-				case 'price':
-					comparison = a.quote.USD.price - b.quote.USD.price;
-					break;
-				case 'name':
-					comparison = a.name.localeCompare(b.name);
-					break;
-				case 'marketCap':
-					comparison = a.quote.USD.market_cap - b.quote.USD.market_cap;
-					break;
-				case 'change24h':
-					comparison = a.quote.USD.percent_change_24h - b.quote.USD.percent_change_24h;
-					break;
-				default:
-					comparison = 0;
-			}
+		// 	switch (sortConfig.field) {
+		// 		case 'price':
+		// 			comparison = a.quote.USD.price - b.quote.USD.price;
+		// 			break;
+		// 		case 'name':
+		// 			comparison = a.name.localeCompare(b.name);
+		// 			break;
+		// 		case 'marketCap':
+		// 			comparison = a.quote.USD.market_cap - b.quote.USD.market_cap;
+		// 			break;
+		// 		case 'change24h':
+		// 			comparison = a.quote.USD.percent_change_24h - b.quote.USD.percent_change_24h;
+		// 			break;
+		// 		default:
+		// 			comparison = 0;
+		// 	}
 			
-			// Invert result for descending sort
-			return sortConfig.direction === 'asc' ? comparison : -comparison;
-		});
+		// 	// Invert result for descending sort
+		// 	return sortConfig.direction === 'asc' ? comparison : -comparison;
+		// });, sortConfig
 		
 		return result;
-	}, [listing, filters, sortConfig]);
+	}, [listing, filters]);
 
 	// Handler for name filter change
 	const handleNameFilterChange = (e) => {
@@ -96,13 +97,13 @@ export const TradePages = () => {
 	};
 
 	// Handler for price range filters
-	const handlePriceFilterChange = (type: 'min' | 'max', value: string) => {
-		const numValue = value === '' ? undefined : Number(value);
-		setFilters({
-			...filters,
-			[type === 'min' ? 'minPrice' : 'maxPrice']: numValue,
-		});
-	};
+	// const handlePriceFilterChange = (type: 'min' | 'max', value: string) => {
+	// 	const numValue = value === '' ? undefined : Number(value);
+	// 	setFilters({
+	// 		...filters,
+	// 		[type === 'min' ? 'minPrice' : 'maxPrice']: numValue,
+	// 	});
+	// };
 
 	// Handler for sorting
 	const handleSort = (field: SortField) => {
@@ -140,8 +141,8 @@ export const TradePages = () => {
 				</div>
 				<div className={styles.hr} />
 				{/* Filter and sort panel */}
-				<div className={styles.filterPanel}>
-					<div className={styles.searchFilters}>
+
+				<div>
 						<input
 							type="text"
 							placeholder="Search by name"
@@ -149,9 +150,10 @@ export const TradePages = () => {
 							onChange={handleNameFilterChange}
 							className={styles.searchInput}
 						/>
-						
-						<div className={styles.priceFilters}>
-							<input
+				</div>
+				<div className={styles.filterPanel}>
+
+							{/* <input
 								type="number"
 								placeholder="Min price"
 								value={filters.minPrice || ''}
@@ -164,11 +166,14 @@ export const TradePages = () => {
 								value={filters.maxPrice || ''}
 								onChange={(e) => handlePriceFilterChange('max', e.target.value)}
 								className={styles.priceInput}
-							/>
-						</div>
-					</div>
-					
-					<div className={styles.sortButtons}>
+							/> */}
+						<button 
+							type="button" 
+							onClick={() => handleSort('name')}
+							className={sortConfig.field === 'name' ? styles.activeSort : ''}
+						>
+							Name {getSortIcon('name')}
+						</button>
 						<button 
 							type="button" 
 							onClick={() => handleSort('price')}
@@ -176,13 +181,19 @@ export const TradePages = () => {
 						>
 							Price {getSortIcon('price')}
 						</button>
-						
+												<button 
+							type="button" 
+							onClick={() => handleSort('change24h')}
+							className={sortConfig.field === 'change24h' ? styles.activeSort : ''}
+						>
+							24h Change {getSortIcon('change24h')}
+						</button>
 						<button 
 							type="button" 
-							onClick={() => handleSort('name')}
-							className={sortConfig.field === 'name' ? styles.activeSort : ''}
+							onClick={() => handleSort('marketCap')}
+							className={sortConfig.field === 'marketCap' ? styles.activeSort : ''}
 						>
-							Name {getSortIcon('name')}
+							24h Volume {getSortIcon('marketCap')}
 						</button>
 						
 						<button 
@@ -193,23 +204,15 @@ export const TradePages = () => {
 							Market Cap {getSortIcon('marketCap')}
 						</button>
 						
-						<button 
-							type="button" 
-							onClick={() => handleSort('change24h')}
-							className={sortConfig.field === 'change24h' ? styles.activeSort : ''}
-						>
-							24h Change {getSortIcon('change24h')}
-						</button>
-					</div>
+						<div>Trade</div>
+				
 				</div>
 				
 				{/* Display filtered and sorted list */}
-				<CryptoList
+				<CryptoListComponent
 					listing={filteredAndSortedListing}
 					logoData={logoData}
 					index={100}
-					className={styles.cryptoListTradePages}
-					classNameItem={styles.cryptoItemForTradePage}
 				/>
 			</div>
 		</div>

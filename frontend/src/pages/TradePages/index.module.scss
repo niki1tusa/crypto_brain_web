@@ -3,6 +3,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+
 }
 .hr{
   	background-color: var.$grey;
@@ -10,20 +12,18 @@
 	border-left: 2px solid rgb(255, 255, 255);
 	height: 1px;   
 }
-.cryptoListTradePages{
+
+
+.filterPanel{
   display: flex;
-  flex-direction: column;
-  list-style-type: none;
-  padding: 20px;
-  margin: 40px 10% 20px;
-  border-radius: 12px;
   justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 15px;
-  
+  border: 1px solid red;
+  margin: 2% 19%
 }
-.cryptoItemForTradePage{
-border: 1px solid white;
-background-color: var.$blackLight;
-display: flex;
+.cryptoList{
+margin: 2% 10%
+}
+.cryptoItem{
+  display: flex;
+  justify-content: space-around;
 }
