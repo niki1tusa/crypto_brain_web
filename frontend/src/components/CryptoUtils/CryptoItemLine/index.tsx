@@ -1,7 +1,7 @@
 import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
 import styles from './index.module.scss';
 import { CryptoInfo } from '../../../context';
-
+import { Link } from 'react-router';
 const ImgComponent = ({ src }: { src: string }) => {
 	return (
 		<div className={styles.logoContainer}>
@@ -56,7 +56,7 @@ export const CryptoItemLine = ({ logoData, item }: CryptoItemLineType) => {
 			</div>
 			<div>
 				<div className={styles.tradeButtonContainer}>
-					<button className={styles.tradeButton}>Trade Now</button>
+					<Link to={`/trade/${item.id}`}><button className={styles.tradeButton}>Trade Now</button></Link>
 				</div>
 			</div>
 		</li>

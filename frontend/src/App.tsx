@@ -34,7 +34,11 @@ function App() {
 							/>
 							<Route path="/new-password" element={<NewPassword />} />
 							<Route path="/trade" element={<TradePages />} />
-							<Route path='/trade/trade-only' element={<TradeOnlyCurrencyPage/>}/> 
+							<Route path="/trade/:id" element={<TradeOnlyCurrencyPage />}>
+								{/* <Route index element={<Overview />} />
+  									<Route path="history" element={<History />} />
+  									<Route path="orders" element={<Orders />} /> */}
+							</Route>
 						</Route>
 					</Routes>
 					<Footer />
