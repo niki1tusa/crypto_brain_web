@@ -11,6 +11,7 @@ const ImgComponent = ({ src }: { src: string }) => {
 };
 interface CryptoItemLineType {
 	logoData: CryptoInfo;
+	trade?: boolean;
 	item: {
 		id: number;
 		name: string;
@@ -25,7 +26,11 @@ interface CryptoItemLineType {
 		};
 	};
 }
-export const CryptoItemLine = ({ logoData, item }: CryptoItemLineType) => {
+export const CryptoItemLine = ({
+	logoData,
+	item,
+	trade = true
+}: CryptoItemLineType) => {
 	return (
 		<li key={`crypto-${item.id}`} className={styles.cryptoItem}>
 			{logoData[item.id] && <ImgComponent src={logoData[item.id].logo} />}
@@ -55,9 +60,13 @@ export const CryptoItemLine = ({ logoData, item }: CryptoItemLineType) => {
 				{item.quote.USD.market_cap.toFixed(2)}
 			</div>
 			<div>
-				<div className={styles.tradeButtonContainer}>
-					<Link to={`/trade/${item.id}`}><button className={styles.tradeButton}>Trade Now</button></Link>
-				</div>
+				{trade ?
+					<div className={styles.tradeButtonContainer}>
+						<Link to={`/trade/${item.id}`}>
+							<button className={styles.tradeButton}>Trade Now</button>
+						</Link>
+					</div>
+				:	''}
 			</div>
 		</li>
 	);

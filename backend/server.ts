@@ -26,6 +26,4 @@ app.use('/api/crypto', CryptoRoutes)
 // finish
 app.listen(env.PORT, ()=>{
     console.log(`Server run on localhost://${env.PORT}`.blue.bold);
-    console.log(`API endpoints available at: http://localhost:${env.PORT}/api/crypto/listings`.green);
-    console.log(`API endpoints available at: http://localhost:${env.PORT}/api/crypto/info`.green);
 })
