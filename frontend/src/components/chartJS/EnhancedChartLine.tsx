@@ -8,6 +8,9 @@ interface EnhancedChartLineProps {
   title?: string;
   volumeData?: number[];
   initialDarkMode?: boolean;
+  volumeColors?: string[];
+  trendColor?: string;
+  volumeScale?: number; // Parameter to control volume bar height
 }
 
 export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
@@ -16,6 +19,7 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
   title = 'Cryptocurrency Price Chart',
   volumeData,
   initialDarkMode = false,
+  volumeScale = 0.3, // Default to 30% of original height
 }) => {
   // State for chart options
   const [darkMode, setDarkMode] = useState(initialDarkMode);
@@ -123,6 +127,7 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
         darkMode={darkMode}
         showVolume={showVolume && !!volumeData && volumeData.length > 0}
         volumeData={volumeData}
+        volumeScale={volumeScale}
       />
       
       <div className={`chart-info ${darkMode ? 'dark-mode' : ''}`}>

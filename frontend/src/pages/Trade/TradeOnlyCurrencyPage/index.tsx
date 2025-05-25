@@ -13,7 +13,7 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
   const [dateLabels, setDateLabels] = useState<string[]>([]);
   const [volumeData, setVolumeData] = useState<number[]>([]);
   const [chartReady, setChartReady] = useState(false);
-  
+  const volumeScale = 0.2
   // Convert id from string to number
   const numId = id ? parseInt(id, 10) : 0;
   
@@ -97,6 +97,7 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
           title={`${result.name} Price History (24h)`}
           volumeData={volumeData}
           initialDarkMode={false}
+          volumeScale={volumeScale}
         />
       ) : (
         <div className="chart-loading">

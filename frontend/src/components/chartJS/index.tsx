@@ -40,6 +40,9 @@ interface ChartLineProps {
   darkMode?: boolean;
   showVolume?: boolean;
   volumeData?: number[];
+  volumeScale?: number;
+  volumeColors?: string[];
+  trendColor?: string;
 }
 
 export const ChartLine: React.FC<ChartLineProps> = ({
@@ -53,6 +56,7 @@ export const ChartLine: React.FC<ChartLineProps> = ({
   darkMode = false,
   showVolume = false,
   volumeData,
+  volumeScale = 0.05, // Reduced to 5% of maximum value
 }) => {
   // Format price with currency symbol
   const formatPrice = (value: number) => {
@@ -86,7 +90,15 @@ export const ChartLine: React.FC<ChartLineProps> = ({
     tooltipBackground: darkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)',
     tooltipBorder: darkMode ? '#555' : '#ddd',
   };
-
+  // Find maximum volume value
+  const maxVolume = volumeData ? Math.max(...volumeData) : 0;
+  
+  // Create a fixed maximum for Y1 axis that will be 20 times larger than the maximum volume
+  // This will allow the bars to occupy only 5% of the chart height
+  const volumeAxisMax = maxVolume / volumeScale;
+  
+  // Use original volume data without scaling - we'll set a fixed maximum for Y1 axis instead
+  const scaledVolumeData = volumeData ? [...volumeData] : [];
   // Chart configuration
   const options: ChartOptions<'line'> = {
     responsive: true,
@@ -137,8 +149,9 @@ export const ChartLine: React.FC<ChartLineProps> = ({
             const value = context.raw as number;
             const datasetLabel = context.dataset.label || '';
             
-            if (datasetLabel === 'Volume') {
-              return `${datasetLabel}: ${value.toLocaleString()} USD`;
+            if (datasetLabel === 'Volume') {              // Show original volume value, not the scaled one
+              const originalValue = volumeData ? volumeData[context.dataIndex] : 0;
+              return `${datasetLabel}: ${originalValue.toLocaleString()} USD`;
             }
             
             // Add price change percentage if not the first point
@@ -219,12 +232,20 @@ export const ChartLine: React.FC<ChartLineProps> = ({
             callback: (value) => {
               return formatVolume(value as number);
             },
+            // Hide tick labels on Y1 axis to avoid showing huge values
+            display: false
           },
           title: {
             display: true,
             text: 'Volume',
             color: theme.textColor,
           },
+          // Set fixed maximum for Y1 axis
+          max: volumeAxisMax,
+          // Start from zero for volume bars
+          beginAtZero: true,
+          // Hide the axis itself
+          display: false
         },
       } : {}),
     },
@@ -306,6 +327,8 @@ export const ChartLine: React.FC<ChartLineProps> = ({
     return gradient;
   };
 
+
+
   // Chart data
   const data = {
     labels,
@@ -330,13 +353,14 @@ export const ChartLine: React.FC<ChartLineProps> = ({
       ...(showVolume && volumeData ? [
         {
           label: 'Volume',
-          data: volumeData,
+          data: scaledVolumeData,
           type: 'bar',
-          backgroundColor: 'rgba(128, 128, 128, 0.3)',
+          backgroundColor: 'rgba(128, 128, 128, 0.5)',
           borderColor: 'rgba(128, 128, 128, 0.5)',
           borderWidth: 1,
           yAxisID: 'y1',
           order: 1,
+          barPercentage: 0.5, // Bar width relative to available space
         },
       ] : []),
     ],
