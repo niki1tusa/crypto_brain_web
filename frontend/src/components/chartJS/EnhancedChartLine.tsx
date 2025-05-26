@@ -18,7 +18,7 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
   labels = [],
   title = 'Cryptocurrency Price Chart',
   volumeData,
-  initialDarkMode = false,
+  initialDarkMode = true,
   volumeScale = 0.3, // Default to 30% of original height
 }) => {
   // State for chart options

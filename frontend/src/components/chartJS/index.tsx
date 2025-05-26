@@ -117,7 +117,7 @@ export const ChartLine: React.FC<ChartLineProps> = ({
             size: 12,
           },
           usePointStyle: true,
-          pointStyle: 'circle',
+          pointStyle: 'rect',
         },
       },
       title: {

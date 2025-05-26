@@ -96,7 +96,7 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
           labels={dateLabels}
           title={`${result.name} Price History (24h)`}
           volumeData={volumeData}
-          initialDarkMode={false}
+          initialDarkMode={true}
           volumeScale={volumeScale}
         />
       ) : (
