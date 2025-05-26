@@ -5,6 +5,7 @@ import { Loader } from "../../../components/Loader";
 import { Title } from "../../../components/Title";
 import { useCrypto } from "../../../context";
 import { EnhancedChartLine } from '../../../components/chartJS/EnhancedChartLine';
+import { ContainerForBuyOrSell } from '../../../components/trendComponents/ContainerForBuyOrSell';
 
 export const TradeOnlyCurrencyPage: React.FC = () => {
   const { isLoading, error, listing} = useCrypto();
@@ -105,6 +106,13 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
         </div>
       )}
  
+
+<div className={styles.buySellContainer}>
+  <button>Buy/Sell</button>
+<ContainerForBuyOrSell btnText="Buy"/>
+<ContainerForBuyOrSell btnText="Sell"/>
+</div>
+
     </div>
-  );
+    )
 }
