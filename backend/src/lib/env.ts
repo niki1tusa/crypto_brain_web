@@ -7,6 +7,7 @@ dotenv.config()
     DATABASE_URL: zodFieldUtil,
     PORT: zodFieldUtil,
     API_CRYPTO_TOKEN: zodFieldUtil,
+    JWT_SECRET: zodFieldUtil,
     
 })
 

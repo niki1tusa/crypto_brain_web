@@ -137,7 +137,7 @@ export const ContainerForBuyOrSell: React.FC<ContainerForBuyOrSellProps> = ({
         {btnText}
       </button>
       
-      <p className={styles.feeNote}>Fees included</p>
+      <p className={styles.feeNote}>Fees included (2%)</p>
     </form>
   );
 };

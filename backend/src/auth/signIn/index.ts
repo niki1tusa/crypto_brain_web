@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma";
 import { trpc } from "../../lib/trpcInit";
+import { token } from "../../utils/jwtToken";
 import { zodSchemaSignIn } from "./input";
 import bcrypt from 'bcryptjs'
 
@@ -22,6 +23,15 @@ if(!verifyPassword){
     throw new Error("There is invalid password!")
 }
 
-return true
+const accessToken = token(user)
+
+
+return {
+    accessToken,
+    user: {
+        id: user.id,
+        name: user.name
+    }
+}
     }
 )
