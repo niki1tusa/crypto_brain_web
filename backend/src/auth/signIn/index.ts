@@ -21,7 +21,7 @@ const verifyPassword = bcrypt.compareSync(input.password, user.password)
 if(!verifyPassword){
     throw new Error("There is invalid password!")
 }
-console.log(`Sign In: ${user}.`);
+
 return true
     }
 )

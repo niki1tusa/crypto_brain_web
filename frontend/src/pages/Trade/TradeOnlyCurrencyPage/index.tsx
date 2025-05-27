@@ -6,7 +6,9 @@ import { Title } from "../../../components/Title";
 import { useCrypto } from "../../../context";
 import { EnhancedChartLine } from '../../../components/chartJS/EnhancedChartLine';
 import { ContainerForBuyOrSell } from '../../../components/trendComponents/ContainerForBuyOrSell';
+import styles from './index.module.scss';
 
+type TabType = 'buysell' | 'watchlist' | 'portfolio' | 'openorders';
 export const TradeOnlyCurrencyPage: React.FC = () => {
   const { isLoading, error, listing} = useCrypto();
   const { id } = useParams<{ id: string }>();
@@ -14,7 +16,9 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
   const [dateLabels, setDateLabels] = useState<string[]>([]);
   const [volumeData, setVolumeData] = useState<number[]>([]);
   const [chartReady, setChartReady] = useState(false);
-  const volumeScale = 0.2
+  const [activeTab, setActiveTab] = useState<TabType>('buysell');
+  const volumeScale = 0.2;
+  
   // Convert id from string to number
   const numId = id ? parseInt(id, 10) : 0;
   
@@ -83,36 +87,82 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
       }
     }
   }, [result]);
+  // Render the content based on the active tab
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'buysell':
+        return (
+          <div className={styles.containerBuyAndSell}>
+            <ContainerForBuyOrSell btnText="Buy"/>
+            <ContainerForBuyOrSell btnText="Sell"/>
+          </div>
+        );
+      case 'watchlist':
+        return <div className={styles.tabContent}>Watchlist content</div>;
+      case 'portfolio':
+        return <div className={styles.tabContent}>Portfolio content</div>;
+      case 'openorders':
+        return <div className={styles.tabContent}>Open Orders content</div>;
+      default:
+        return null;
+    }
+  };
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorComponent />;
   if (!result) return <div className="error-container">Cryptocurrency not found</div>;
   
   return (
-    <div className="trade-currency-container">
+    <div className={styles.pageWrapper}>
       <Title heading="h2">Trade {result.name}</Title> 
       
-      {chartReady ? (
-        <EnhancedChartLine
-          priceData={priceChart} 
-          labels={dateLabels}
-          title={`${result.name} Price History (24h)`}
-          volumeData={volumeData}
-          initialDarkMode={true}
-          volumeScale={volumeScale}
-        />
-      ) : (
-        <div className="chart-loading">
-          Preparing chart data...
-        </div>
-      )}
- 
+      <section className={styles.chartSection}>
+        {chartReady ? (
+          <EnhancedChartLine
+            priceData={priceChart} 
+            labels={dateLabels}
+            title={`${result.name} Price History (24h)`}
+            volumeData={volumeData}
+            initialDarkMode={true}
+            volumeScale={volumeScale}
+          />
+        ) : (
+          <div className="chart-loading">
+            Preparing chart data...
+          </div>
+        )}
+      </section>
 
-<div className={styles.buySellContainer}>
-  <button>Buy/Sell</button>
-<ContainerForBuyOrSell btnText="Buy"/>
-<ContainerForBuyOrSell btnText="Sell"/>
-</div>
-
+      <div className={styles.container}>
+        <nav className={styles.navigationButtons}>
+          <button 
+            className={activeTab === 'buysell' ? styles.active : ''} 
+            onClick={() => setActiveTab('buysell')}
+          >
+            Buy/Sell
+          </button>
+          <button 
+            className={activeTab === 'watchlist' ? styles.active : ''} 
+            onClick={() => setActiveTab('watchlist')}
+          >
+            Watchlist
+          </button>
+          <button 
+            className={activeTab === 'portfolio' ? styles.active : ''} 
+            onClick={() => setActiveTab('portfolio')}
+          >
+            Portfolio
+          </button>
+          <button 
+            className={activeTab === 'openorders' ? styles.active : ''} 
+            onClick={() => setActiveTab('openorders')}
+          >
+            Open Orders
+          </button>
+        </nav>
+        
+        {renderTabContent()}
+      </div>
     </div>
-    )
+  )
 }

@@ -1,3 +1,198 @@
-.container{
-background-color: #272A34;
+.container {
+  background: linear-gradient(145deg, #272A34, #1E2128);
+  border-radius: 12px;
+  padding: 24px;
+  color: #e6e6e6;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 100%;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  }
+  
+  // Заголовок и радио-кнопки
+  .radioGroup {
+    display: flex;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    
+    label {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border-radius: 6px;
+      
+      &.active {
+        background: rgba(78, 204, 163, 0.2);
+        color: #4ecca3;
+      }
+    }
+    
+    input[type="radio"] {
+      display: none;
+    }
+  }
+  
+  // Баланс
+  .balance {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    
+    .amount {
+      color: #4ecca3;
+      font-weight: 600;
+    }
+  }
+  
+  // Секция объема
+  .volumeSection {
+    margin: 20px 0;
+    
+    .title {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #a0a0a0;
+    }
+    
+    .percentButtons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      
+      button {
+        background: rgba(255, 255, 255, 0.05);
+        border: none;
+        color: #e6e6e6;
+        padding: 10px 0;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+        
+        &.active {
+          background: rgba(78, 204, 163, 0.2);
+          color: #4ecca3;
+        }
+      }
+    }
+  }
+  
+  // Кнопка действия (покупка/продажа)
+  .actionButton {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 16px 0 10px;
+    
+    &.buy {
+      background: linear-gradient(135deg, #4ecca3, #2e8b57);
+      color: white;
+      
+      &:hover {
+        background: linear-gradient(135deg, #3db390, #267349);
+        transform: translateY(-2px);
+      }
+    }
+    
+    &.sell {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      
+      &:hover {
+        background: linear-gradient(135deg, #d44637, #a93226);
+        transform: translateY(-2px);
+      }
+    }
+  }
+  
+  // Текст о комиссии
+  .feeNote {
+    text-align: center;
+    font-size: 12px;
+    color: #a0a0a0;
+    margin-top: 8px;
+  }
+  
+  // Поле ввода для лимитного ордера
+  .inputField {
+    margin: 16px 0;
+    
+    .label {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #a0a0a0;
+    }
+    
+    input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 12px;
+      color: #e6e6e6;
+      font-size: 16px;
+      
+      &:focus {
+        outline: none;
+        border-color: rgba(78, 204, 163, 0.5);
+        box-shadow: 0 0 0 2px rgba(78, 204, 163, 0.2);
+      }
+    }
+  }
+}
+
+// Адаптивность для мобильных устройств
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+    border-radius: 8px;
+    
+    .volumeSection {
+      .percentButtons {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+      }
+    }
+    
+    .actionButton {
+      padding: 12px;
+    }
+  }
+}
+
+// Анимации
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pulseAnimation {
+  animation: pulse 1.5s infinite;
 }
