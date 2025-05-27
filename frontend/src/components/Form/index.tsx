@@ -3,8 +3,10 @@ import { Input } from '../Input';
 import styles from './index.module.scss';
 import { Button } from '../Button';
 import { trpc } from '../../lib/trpc';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router';
 // type
-type TRPCRouterKey = keyof typeof trpc
+type TRPCRouterKey = keyof typeof trpc;
 
 // component
 function Form({
@@ -14,8 +16,7 @@ function Form({
 	password = '',
 	router,
 	disabled,
-	successMessage,
-	errorMessage,
+	errorMessage
 }: {
 	name?: string;
 	phone?: string;
@@ -23,21 +24,21 @@ function Form({
 	password?: string;
 	router?: TRPCRouterKey;
 	disabled?: boolean;
-	successMessage?: string;
 	errorMessage?: string;
 }) {
 	const [success, setSuccess] = useState(false);
-	const [error, setError] = useState(false)
+	const [error, setError] = useState(false);
 	const [formValue, setFormValue] = useState({
 		name: '',
 		phone: '',
 		email: '',
 		password: ''
 	});
-	const dynamicTrpc = trpc[router]
+	const navigate = useNavigate()
+	const dynamicTrpc = trpc[router];
 	const mutation = dynamicTrpc.useMutation({
 		onSuccess: data => {
-			console.log(successMessage, data);
+			console.log( data);
 			setSuccess(true);
 			// Очистка формы после успешной отправки
 			setFormValue({
@@ -46,75 +47,80 @@ function Form({
 				email: '',
 				password: ''
 			});
-			setTimeout(()=>{
-				setSuccess(false)
-			}, 3000)
+			setTimeout(() => {
+				setSuccess(false);
+			}, 3000);
 		},
 		onError: error => {
 			setError(true);
-			setTimeout(()=>{
-				setError(false)
-			}, 3000)
+			setTimeout(() => {
+				setError(false);
+			}, 3000);
 		}
 	});
 	const handlerOnChange = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setFormValue({ ...formValue, [e.target.name]: e.target.value });
 	return (
-			<form
-				className={styles.form}
-				onSubmit={e => {
-					e.preventDefault();
-				if(mutation){
-						mutation.mutate(formValue);
-					console.log(successMessage);
+		<form
+			className={styles.form}
+			onSubmit={ async(e) => {
+				e.preventDefault();
+				if (mutation) {
+					try {
+						const result = await mutation.mutateAsync(formValue);
+						Cookies.set('token', result.accessToken, { expires: 99999 });
+						navigate('/')
+					} catch (error) {
+						console.error('Ошибка при отправке формы:', error);
+						setError(true);
+					}
 				} else {
-					throw new Error('мутация не найдена')
+					throw new Error('мутация не найдена');
 				}
-				}}
-			>
-				{name && (
-					<Input
-						id="Name"
-						name="name"
-						type="text"
-						value={formValue.name}
-						onChange={e => handlerOnChange(e)}
-					/>
-				)}
-				{phone && (
-					<Input
-						id="Phone"
-						name="phone"
-						type="tel"
-						value={formValue.phone}
-						onChange={e => handlerOnChange(e)}
-					/>
-				)}
-				{email && (
-					<Input
-						id="Email"
-						name="email"
-						type="email"
-						value={formValue.email}
-						onChange={e => handlerOnChange(e)}
-					/>
-				)}
-				{password && (
-					<Input
-						id="Password"
-						name="password"
-						type="password"
-						value={formValue.password}
-						onChange={e => handlerOnChange(e)}
-					/>
-				)}
-				{error && <div className={styles.errorMessage}>{errorMessage}</div>}
-				{success && <div className={styles.successMessage}> {successMessage}</div>}
-				<Button type="submit" disabled={disabled}>Submit</Button>
-			</form>
-
+			}}
+		>
+			{name && (
+				<Input
+					id="Name"
+					name="name"
+					type="text"
+					value={formValue.name}
+					onChange={e => handlerOnChange(e)}
+				/>
+			)}
+			{phone && (
+				<Input
+					id="Phone"
+					name="phone"
+					type="tel"
+					value={formValue.phone}
+					onChange={e => handlerOnChange(e)}
+				/>
+			)}
+			{email && (
+				<Input
+					id="Email"
+					name="email"
+					type="email"
+					value={formValue.email}
+					onChange={e => handlerOnChange(e)}
+				/>
+			)}
+			{password && (
+				<Input
+					id="Password"
+					name="password"
+					type="password"
+					value={formValue.password}
+					onChange={e => handlerOnChange(e)}
+				/>
+			)}
+			{error && <div className={styles.errorMessage}>{errorMessage}</div>}
+			<Button type="submit" disabled={disabled}>
+				Submit
+			</Button>
+		</form>
 	);
 }
 
 export default Form;
-

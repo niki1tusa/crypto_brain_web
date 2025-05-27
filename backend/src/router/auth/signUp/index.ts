@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { router, trpc } from "../../lib/trpcInit";
 import { hashedPasswordFnc } from "../../utils/hashedPassword";
+import { token } from "../../utils/jwtToken";
 import { zodSchemaSignUp } from "./input";
 
 
@@ -45,10 +46,8 @@ const hashPassword = await hashedPasswordFnc(input.password)
     }
 })
 
-return {
-    id: user.id,
-    name: user.name,
-    password: user.password
+    const accessToken  = token(user)
+return { accessToken 
 }
     }
 )

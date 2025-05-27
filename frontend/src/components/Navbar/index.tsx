@@ -4,6 +4,7 @@ import logo from '../../assets/Logo.svg';
 import { Button } from '../Button';
 import { ThemeSwitcher } from '../ThemeSwitcher';
 import { useEffect, useState } from 'react';
+import { getSignInRoute, getSignUpRoute } from '../../lib/routes';
 
 interface Children {
 	children: React.ReactNode;
@@ -50,10 +51,10 @@ export const Navbar = () => {
 				<a href="*" className={styles.link}>Career</a>
 			</Wrapper>
 			<Wrapper>
-				<Link to="/sign-up">
+				<Link to={getSignUpRoute()}>
 					<Button>Sign Up</Button>
 				</Link>
-				<Link to="/sign-in">
+				<Link to={getSignInRoute()}>
 					<Button>Sign In</Button>
 				</Link>
 				<ThemeSwitcher theme={theme} onThemeChange={handleThemeChange} />

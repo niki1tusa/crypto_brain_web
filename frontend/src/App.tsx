@@ -13,6 +13,7 @@ import { Footer } from './components/Footer';
 import { TradePages } from './pages/Trade/TradePages';
 import { CryptoProvider } from './context';
 import { TradeOnlyCurrencyPage } from './pages/Trade/TradeOnlyCurrencyPage';
+import { getSignInRoute, getSignUpRoute } from './lib/routes';
 
 function App() {
 	return (
@@ -22,8 +23,8 @@ function App() {
 					<Routes>
 						<Route element={<Layout />}>
 							<Route path="/" element={<Home />} />
-							<Route path="/sign-up" element={<SignUp />} />
-							<Route path="/sign-in" element={<SignIn />} />
+							<Route path={getSignUpRoute()} element={<SignUp />} />
+							<Route path={getSignInRoute()} element={<SignIn />} />
 							<Route
 								path="/reset-password-email"
 								element={<ForgotPasswordEmail />}

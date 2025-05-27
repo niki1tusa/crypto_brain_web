@@ -1,6 +1,6 @@
 import { signInTrpcRouter } from "../auth/signIn";
 import { signUpTrpcRouter } from "../auth/signUp";
-import { router } from "./trpcInit";
+import { router } from "./trpc";
 
 
 const appRouter = router({
