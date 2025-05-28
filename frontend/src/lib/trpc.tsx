@@ -1,9 +1,9 @@
 import { createTRPCReact } from '@trpc/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { AppRouter } from '../../../backend/src/lib/trpcRouter';
+import type { AppRouter } from '../../../backend/src/routes';
 import { env } from './env';
-
+import Cookies from 'js-cookie'
 export const trpc = createTRPCReact<AppRouter>();
 
 export const queryClient = new QueryClient();
@@ -12,6 +12,12 @@ export const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
       url: env.VITE_BACKEND_TRPC_URL, 
+      headers: ()=>{
+        const token = Cookies.get('token')
+        return {
+          ...(token && {authorization: `Bearer ${token}`})
+        }
+      }
     }),
   ],
 });

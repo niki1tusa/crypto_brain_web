@@ -1,3 +1,4 @@
+import { log } from "console";
 import { trpc } from "../../../lib/trpc";
 import { hashedPasswordFnc } from "../../../utils/hashedPassword";
 import { token } from "../../../utils/jwtToken";
@@ -46,7 +47,6 @@ const hashPassword = await hashedPasswordFnc(input.password)
 })
 
     const accessToken  = token(user)
-return { accessToken 
-}
+return { accessToken }
     }
 )

@@ -222,7 +222,7 @@ export const ChartLine: React.FC<ChartLineProps> = ({
       ...(showVolume && volumeData ? {
         y1: {
           type: 'linear' as const,
-          display: true,
+
           position: 'left' as const,
           grid: {
             display: false,

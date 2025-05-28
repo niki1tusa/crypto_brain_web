@@ -1,8 +1,4 @@
-*add adaptive ui for navbar;
-*при клике на глазок выскакивает ошибка, возможно после клика на глазок происходит отправка формы?
-*сделать компонент группы кнопок и одиннокую кнопку
-*create pagination for trade page
-* сделать trade page легче
+*add adaptive ui for navbar add burger menu for mobile screens 
+*улучшить читабельность frontend archicture and  create frontend reuse component
 *upgrade Layout component
-*delete no need styles variable (root and $)
-*!!!! fix getMe and routes (auth -> sign in/up (path is broke))
+*исправить backend: lib/trpc  and   getme middleware

@@ -1,14 +1,25 @@
-import { initTRPC } from '@trpc/server';
+import {  inferAsyncReturnType, initTRPC } from '@trpc/server';
+import * as trpcExpress from '@trpc/server/adapters/express';
 import { AppContext } from './ctx';
 import { createExpressMiddleware } from '@trpc/server/adapters/express';
 import {type Express}  from 'express'
 import { AppRouter } from '../routes';
+import { ExpressRequest } from '../utils/types';
+
  
 export const trpc = initTRPC.context<AppContext>().create();
 export const router = trpc.router;
 export const publicProcedure = trpc.procedure;
 export const middleware = trpc.middleware;
 
+
+const getCreateTrpcContext = (ctx: AppContext) => {
+	({req}: trpcExpress.CreateExpressContextOptions)=>({
+...ctx,
+me: (req as ExpressRequest).user || null
+	})
+}
+type TrpcContext = ReturnType<ReturnType<typeof getCreateTrpcContext>>
 interface ApplyTrpcType{
     app: Express
     ctx: AppContext
