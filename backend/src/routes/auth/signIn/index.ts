@@ -1,7 +1,7 @@
-import { prisma } from "../../lib/prisma";
-import { trpc } from "../../lib/trpcInit";
-import { hashedPasswordFnc } from "../../utils/hashedPassword";
-import { token } from "../../utils/jwtToken";
+
+import { trpc } from "../../../lib/trpc";
+import { hashedPasswordFnc } from "../../../utils/hashedPassword";
+import { token } from "../../../utils/jwtToken";
 import { zodSchemaSignIn } from "./input";
 import bcrypt from 'bcryptjs'
 
@@ -9,7 +9,7 @@ import bcrypt from 'bcryptjs'
 export const signInTrpcRouter = trpc.procedure.input(zodSchemaSignIn).mutation(
     async({ctx, input})=>{
 
-    const user =  await prisma.user.findUnique({
+    const user =  await  ctx.prisma.user.findUnique({
    where:{
     name: input.name,
    } 

@@ -60,43 +60,6 @@ interface CryptoInfoData {
 	};
 }
 
-// Interface for historical cryptocurrency data
-interface CryptoHistoricalData {
-	data: {
-		id?: number;
-		name?: string;
-		symbol: string;
-		quotes: Array<{
-			timestamp: string;
-			quote: {
-				price: number;
-				volume_24h: number;
-				market_cap: number;
-				circulating_supply: number;
-				total_supply: number;
-				timestamp: string;
-			};
-		}>;
-	};
-	status: {
-		timestamp: string;
-		error_code: number;
-		error_message: string | null;
-		elapsed: number;
-		credit_count: number;
-	};
-}
-
-// Interface for API error responses
-interface ApiErrorResponse {
-	status: {
-		timestamp: string;
-		error_code: number;
-		error_message: string;
-		elapsed: number;
-		credit_count: number;
-	};
-}
 
 router.get('/listings', async (req, res) => {
 	try {

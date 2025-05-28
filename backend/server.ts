@@ -1,29 +1,35 @@
-import express from 'express'
-import 'colors'
-import { env } from './src/lib/env'
-import cors from 'cors'
-import { createExpressMiddleware} from '@trpc/server/adapters/express'
-import {appRouter} from './src/lib/trpcRouter'
-import CryptoRoutes from './src/api/routes'
+import express from 'express';
+import 'colors';
+import { env } from './src/lib/env';
+import cors from 'cors';
+import { appRouter } from './src/routes';
+import CryptoRoutes from './src/api';
+import { applyPassportToExpressApp } from './src/lib/passport';
+import { createAppContext } from './src/lib/ctx';
+import { applyTrpcToExpressApp } from './src/lib/trpc';
 
+void (async () => {
+	const app = express();
+	const ctx = createAppContext();
+	try {
+		// middleware
+		app.use(express.json());
+		app.use(cors());
+        // passport middleware
+		applyPassportToExpressApp(app, ctx);
+        
+		// trpc middleware
+	applyTrpcToExpressApp({app, ctx, appRouter})
 
-const app = express()
+		// API crypto_currency middleware
+		app.use('/api/crypto', CryptoRoutes);
 
-// middleware
-app.use(express.json())
-app.use(cors())
-
-// trpc middleware
-app.use('/api/trpc', createExpressMiddleware({
-    router: appRouter,
-    createContext: () => ({})
-}))
-// API crypto_currency middleware
-app.use('/api/crypto', CryptoRoutes)
-
-
-
-// finish
-app.listen(env.PORT, ()=>{
-    console.log(`Server run on localhost://${env.PORT}`.blue.bold);
-})
+		// start server
+		app.listen(env.PORT, () => {
+			console.log(`Server run on localhost://${env.PORT}`.blue.bold);
+		});
+	} catch (error) {
+		console.error(error);
+		await ctx?.stop();
+	}
+})();

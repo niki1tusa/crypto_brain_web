@@ -1,7 +1,6 @@
-import { prisma } from "../../lib/prisma";
-import { router, trpc } from "../../lib/trpcInit";
-import { hashedPasswordFnc } from "../../utils/hashedPassword";
-import { token } from "../../utils/jwtToken";
+import { trpc } from "../../../lib/trpc";
+import { hashedPasswordFnc } from "../../../utils/hashedPassword";
+import { token } from "../../../utils/jwtToken";
 import { zodSchemaSignUp } from "./input";
 
 
@@ -9,7 +8,7 @@ import { zodSchemaSignUp } from "./input";
 export const signUpTrpcRouter = trpc.procedure.input(zodSchemaSignUp).mutation(
     async({ctx, input})=>{
         // exists
-    const existUser =  await  prisma.user.findUnique({
+    const existUser =  await  ctx.prisma.user.findUnique({
    where:{
     name: input.name
    } 
@@ -17,7 +16,7 @@ export const signUpTrpcRouter = trpc.procedure.input(zodSchemaSignUp).mutation(
 if(existUser){
     throw new Error('User this name is already exists!')
 }
-const existEmail =  await  prisma.user.findUnique({
+const existEmail =  await  ctx.prisma.user.findUnique({
     where:{
      email: input.email
     } 
@@ -25,7 +24,7 @@ const existEmail =  await  prisma.user.findUnique({
  if(existEmail){
      throw new Error('User this email is already exists!')
  }
- const existPhone =  await  prisma.user.findUnique({
+ const existPhone =  await  ctx.prisma.user.findUnique({
     where:{
      phone: input.phone
     } 
@@ -37,7 +36,7 @@ const existEmail =  await  prisma.user.findUnique({
 const hashPassword = await hashedPasswordFnc(input.password)
 
 
- const user = await prisma.user.create({
+ const user = await ctx.prisma.user.create({
     data: {
         name: input.name,
         email: input.email,
