@@ -1,7 +1,7 @@
 
 import { trpc } from "../../../lib/trpc";
 import { hashedPasswordFnc } from "../../../utils/hashedPassword";
-import { token } from "../../../utils/jwtToken";
+import { tokenSign } from "../../../utils/jwtToken";
 import { zodSchemaSignIn } from "./input";
 import bcrypt from 'bcryptjs'
 
@@ -24,7 +24,7 @@ if(!verifyPassword){
     throw new Error("There is invalid password!")
 }
 
-const accessToken = token(user)
+const accessToken = tokenSign(user.id)
 
 
 return {

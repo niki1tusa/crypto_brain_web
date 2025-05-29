@@ -13,10 +13,12 @@ export const applyPassportToExpressApp = (app: Express, ctx: AppContext) =>{
         secretOrKey: env.JWT_SECRET,
         jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer')
     },
-    (jwtPayload: string, done)=>{
+    (jwtPayload:{ userId: string}, done)=>{
         ctx.prisma.user
         .findFirst({
-            where: {id: jwtPayload}
+            where: {
+                id: jwtPayload.userId
+            }
         })
         .then((user)=>{
             if(!user){

@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { AppRouter } from '../../../backend/src/routes';
 import { env } from './env';
 import Cookies from 'js-cookie'
+
 export const trpc = createTRPCReact<AppRouter>();
 
 export const queryClient = new QueryClient();

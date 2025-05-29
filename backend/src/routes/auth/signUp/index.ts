@@ -1,7 +1,7 @@
 import { log } from "console";
 import { trpc } from "../../../lib/trpc";
 import { hashedPasswordFnc } from "../../../utils/hashedPassword";
-import { token } from "../../../utils/jwtToken";
+import { tokenSign } from "../../../utils/jwtToken";
 import { zodSchemaSignUp } from "./input";
 
 
@@ -46,7 +46,7 @@ const hashPassword = await hashedPasswordFnc(input.password)
     }
 })
 
-    const accessToken  = token(user)
+    const accessToken  = tokenSign(user.id)
 return { accessToken }
     }
 )
