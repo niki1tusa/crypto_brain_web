@@ -4,6 +4,7 @@ import { LayoutForForm } from '../../../components/Layout';
 import { useState } from 'react';
 
 const SignUp = () => {
+
 	const [isDisabled, setIsDisabled] = useState(true);
 	return (
 		<LayoutForForm title="Sign Up">
@@ -14,7 +15,6 @@ const SignUp = () => {
 				password="password"
 				router="signUp"
 				disabled={isDisabled}
-				successMessage="User is success created!"
 				errorMessage='Error: This is not correctly data in field!'
 			/>
 			<div style={{ fontSize: 14, marginTop: 30 }}>

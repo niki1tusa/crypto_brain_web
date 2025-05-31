@@ -4,7 +4,11 @@ import logo from '../../assets/Logo.svg';
 import { Button } from '../Button';
 import { ThemeSwitcher } from '../ThemeSwitcher';
 import { useEffect, useState } from 'react';
-import { getSignInRoute, getSignUpRoute } from '../../lib/routes';
+import {
+	getSignInRoute,
+	getSignOutRoute,
+	getSignUpRoute
+} from '../../lib/routes';
 import { trpc } from '../../lib/trpc';
 
 interface Children {
@@ -18,6 +22,7 @@ const Wrapper = ({ children }: Children) => {
 export const Navbar = () => {
 	const navigate = useNavigate();
 	const { data, isError, isLoading, isFetching } = trpc.getMe.useQuery();
+	const name = data?.me?.name 
 	const [theme, setTheme] = useState('dark');
 	// Apply theme to document
 	useEffect(() => {
@@ -37,6 +42,16 @@ export const Navbar = () => {
 	const handleThemeChange = (e: string) => {
 		setTheme(e);
 	};
+	const renderSignButton = (
+		<>
+			<Link to={getSignUpRoute()}>
+				<Button>Sign Up</Button>
+			</Link>
+			<Link to={getSignInRoute()}>
+				<Button>Sign In</Button>
+			</Link>
+		</>
+	);
 	return (
 		<nav className={styles.navBar}>
 			<Wrapper>
@@ -47,13 +62,13 @@ export const Navbar = () => {
 				<Link to="/" className={styles.link}>
 					Home
 				</Link>
-				<a href="*" className={styles.link}>
+				{/* <a href="*" className={styles.link}>
 					Market
-				</a>
-				<a href="/trade" className={styles.link}>
+				</a> */}
+				<Link to="/trade" className={styles.link}>
 					Trade
-				</a>
-				<a href="*" className={styles.link}>
+				</Link>
+				{/* <a href="*" className={styles.link}>
 					Earn
 				</a>
 				<a href="*" className={styles.link}>
@@ -61,21 +76,14 @@ export const Navbar = () => {
 				</a>
 				<a href="*" className={styles.link}>
 					Career
-				</a>
+				</a> */}
 			</Wrapper>
 			<Wrapper>
-				{isLoading || isError || isFetching ?
-					null
-				: data?.me ?
-					<>
-						<Link to={getSignUpRoute()}>
-							<Button>Sign Up</Button>
-						</Link>
-						<Link to={getSignInRoute()}>
-							<Button>Sign In</Button>
-						</Link>
-					</>
-				:	<Button>Log Out</Button>}
+				{isLoading || isFetching || isError? null: data?.me?
+					<Link to={getSignOutRoute()}>
+						<Button>Log Out ({name})</Button>
+					</Link>
+				:	renderSignButton}
 				<ThemeSwitcher theme={theme} onThemeChange={handleThemeChange} />
 			</Wrapper>
 		</nav>

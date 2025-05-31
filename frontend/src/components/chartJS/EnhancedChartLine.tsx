@@ -78,7 +78,7 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
           className={`control-button ${darkMode ? 'dark-mode' : ''} ${darkMode ? 'active' : ''}`}
           onClick={() => setDarkMode(!darkMode)}
         >
-          {darkMode ? '☀️ Light' : '🌙 Dark'}
+          {darkMode ? '🌙 Dark': '☀️ Light'  }
         </button>
         
         <button 

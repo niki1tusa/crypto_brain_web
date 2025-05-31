@@ -1,19 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
-import Home from './pages/Home';
-import SignUp from './pages/auth/SignUp';
+import Home from './pages/HomePage';
+import SignUp from './pages/auth/SignUpPage';
 import { TRPCProvider } from './lib/trpc';
 import { Layout } from './components/Layout';
-import SignIn from './pages/auth/SignIn';
+import SignIn from './pages/auth/SignInPage';
 import {
 	ForgotPasswordEmail,
 	ForgotPasswordPhone,
 	NewPassword
-} from './pages/auth/ForgotPassword';
+} from './pages/auth/ForgotPasswordPage';
 import { Footer } from './components/Footer';
 import { TradePages } from './pages/Trade/TradePages';
 import { CryptoProvider } from './context';
 import { TradeOnlyCurrencyPage } from './pages/Trade/TradeOnlyCurrencyPage';
-import { getSignInRoute, getSignUpRoute } from './lib/routes';
+import { getSignInRoute, getSignOutRoute, getSignUpRoute } from './lib/routes';
+import { SignOutPage } from './pages/auth/SignOutPage';
 
 function App() {
 	return (
@@ -21,6 +22,7 @@ function App() {
 			<BrowserRouter>
 				<CryptoProvider>
 					<Routes>
+						<Route path={getSignOutRoute()} element={<SignOutPage/>}/>
 						<Route element={<Layout />}>
 							<Route path="/" element={<Home />} />
 							<Route path={getSignUpRoute()} element={<SignUp />} />

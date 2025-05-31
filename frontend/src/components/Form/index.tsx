@@ -7,7 +7,15 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router';
 // type
 type TRPCRouterKey = keyof typeof trpc;
-
+interface FormPropsType {
+	name?: string;
+	phone?: string;
+	email?: string;
+	password?: string;
+	router?: TRPCRouterKey;
+	disabled?: boolean;
+	errorMessage?: string;
+}
 // component
 function Form({
 	name = '',
@@ -17,16 +25,7 @@ function Form({
 	router,
 	disabled,
 	errorMessage
-}: {
-	name?: string;
-	phone?: string;
-	email?: string;
-	password?: string;
-	router?: TRPCRouterKey;
-	disabled?: boolean;
-	errorMessage?: string;
-}) {
-	const [success, setSuccess] = useState(false);
+}: FormPropsType) {
 	const [error, setError] = useState(false);
 	const [formValue, setFormValue] = useState({
 		name: '',
@@ -34,12 +33,12 @@ function Form({
 		email: '',
 		password: ''
 	});
-	const navigate = useNavigate()
+	const navigate = useNavigate();
+	const trpcUtils = trpc.useUtils();
 	const dynamicTrpc = trpc[router];
 	const mutation = dynamicTrpc.useMutation({
 		onSuccess: data => {
-			console.log( data);
-			setSuccess(true);
+			console.log(data);
 			// Очистка формы после успешной отправки
 			setFormValue({
 				name: '',
@@ -47,11 +46,9 @@ function Form({
 				email: '',
 				password: ''
 			});
-			setTimeout(() => {
-				setSuccess(false);
-			}, 3000);
 		},
-		onError: error => {
+		onError: (error: any) => {
+			console.error('Mutation error:', error);
 			setError(true);
 			setTimeout(() => {
 				setError(false);
@@ -63,16 +60,23 @@ function Form({
 	return (
 		<form
 			className={styles.form}
-			onSubmit={ async(e) => {
+			onSubmit={async e => {
 				e.preventDefault();
 				if (mutation) {
 					try {
+
 						const result = await mutation.mutateAsync(formValue);
-						Cookies.set('token', result.accessToken, { expires: 99999 });
-						navigate('/')
+						const {accessToken} = result
+						console.log(accessToken);
+				    	Cookies.set('token', accessToken, { expires: 99999 });
+						await trpcUtils.invalidate();
+						navigate('/');
 					} catch (error) {
 						console.error('Ошибка при отправке формы:', error);
 						setError(true);
+						setTimeout(() => {
+							setError(false);
+						}, 3000);
 					}
 				} else {
 					throw new Error('мутация не найдена');
