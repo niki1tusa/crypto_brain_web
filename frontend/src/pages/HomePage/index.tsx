@@ -8,6 +8,7 @@ import { Loader } from '../../components/Loader';
 import { CryptoList } from '../../components/CryptoList';
 import { useCrypto } from '../../context';
 import { ErrorComponent } from '../../components/ErrorComponent';
+import { TwoSectionHomePage } from '../../components/HomeComponent';
 
 const Home = () => {
 
@@ -43,6 +44,8 @@ const Home = () => {
 			<div>
 				<CryptoList listing={listing} logoData={logoData} index={10}/>
 			</div>
+
+			<TwoSectionHomePage/>
 		</div>
 	);
 };

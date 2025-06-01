@@ -41,4 +41,7 @@ export const applyPassportToExpressApp = (app: Express, ctx: AppContext) =>{
     passport.authenticate('jwt', {session: false})(req, res, next)
  })
 }
-
+// можно добавить третий аргумент для authenticate (безопасноть token)
+// (...args: any[])=>{
+//         console.log(args)
+//         req.user = args[1] || undefined}

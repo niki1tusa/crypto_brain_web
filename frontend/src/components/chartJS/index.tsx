@@ -4,60 +4,139 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
-  BarElement,
+  TimeScale,
   Title,
   Tooltip,
   Legend,
   ChartOptions,
-  Filler,
+  ChartData,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import {
+  CandlestickController,
+  CandlestickElement,
+  OhlcController,
+  OhlcElement,
+} from 'chartjs-chart-financial';
+import { Chart } from 'react-chartjs-2';
+import 'chartjs-adapter-date-fns';
+import { enUS } from 'date-fns/locale';
 
 // Register required Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
-  BarElement, // Added BarElement for bar chart support
+  TimeScale,
   Title,
   Tooltip,
   Legend,
-  Filler
+  CandlestickController,
+  CandlestickElement,
+  OhlcController,
+  OhlcElement
 );
 
-// Define interface for props
-interface ChartLineProps {
-  priceData?: number[];
-  labels?: string[];
-  title?: string;
-  borderColor?: string;
-  backgroundColor?: string;
-  showGrid?: boolean;
-  showGradient?: boolean;
-  darkMode?: boolean;
-  showVolume?: boolean;
-  volumeData?: number[];
-  volumeScale?: number;
-  volumeColors?: string[];
-  trendColor?: string;
+// Define interface for OHLC data input
+interface OHLCData {
+  x: string | Date;
+  o: number; // Open
+  h: number; // High
+  l: number; // Low
+  c: number; // Close
 }
 
-export const ChartLine: React.FC<ChartLineProps> = ({
-  priceData = [100, 120, 115, 134, 168, 132, 200],
-  labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-  title = 'Price Change Chart',
-  borderColor = 'rgb(53, 162, 235)',
-  backgroundColor = 'rgba(53, 162, 235, 0.5)',
-  showGrid = false,
-  showGradient = true,
+// Define interface that matches FinancialDataPoint
+interface FinancialDataPoint {
+  x: number;
+  o: number;
+  h: number;
+  l: number;
+  c: number;
+}
+
+interface CandlestickChartProps {
+  ohlcData?: OHLCData[];
+  title?: string;
+  showGrid?: boolean;
+  darkMode?: boolean;
+  showVolume?: boolean;
+  volumeData?: { x: string | Date; y: number }[];
+  upColor?: string;
+  downColor?: string;
+  wickColor?: string;
+}
+
+export const CandlestickChart: React.FC<CandlestickChartProps> = ({
+  ohlcData = [
+    { x: '2024-01-01', o: 100, h: 120, l: 95, c: 115 },
+    { x: '2024-01-02', o: 115, h: 125, l: 110, c: 120 },
+    { x: '2024-01-03', o: 120, h: 130, l: 115, c: 125 },
+    { x: '2024-01-04', o: 125, h: 135, l: 120, c: 130 },
+    { x: '2024-01-05', o: 130, h: 140, l: 125, c: 135 },
+  ],
+  title = 'Candlestick Chart',
+  showGrid = true,
   darkMode = false,
   showVolume = false,
   volumeData,
-  volumeScale = 0.05, // Reduced to 5% of maximum value
+  upColor = '#26a69a', // Green for bullish candles
+  downColor = '#ef5350', // Red for bearish candles
+  wickColor = '#757575', // Gray for wicks
 }) => {
+  
+  console.log('CandlestickChart rendering with data:', ohlcData);
+  console.log('Volume data:', volumeData);
+
+  // Convert OHLCData to FinancialDataPoint format
+// Convert OHLCData to FinancialDataPoint format
+const convertToFinancialData = (data: OHLCData[]): FinancialDataPoint[] => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  return data.map((item, index) => {
+    let timestamp: number;
+    
+    if (typeof item.x === 'string') {
+      // Если это время в формате "21:00"
+      if (item.x.match(/^\d{1,2}:\d{2}$/)) {
+        const [hours, minutes] = item.x.split(':').map(Number);
+        const date = new Date(today);
+        date.setHours(hours, minutes, 0, 0);
+        timestamp = date.getTime();
+      } else {
+        // Попытка парсинга как полной даты
+        const parsedDate = new Date(item.x);
+        if (isNaN(parsedDate.getTime())) {
+          // Fallback: создаем время на основе индекса
+          const fallbackDate = new Date(today);
+          fallbackDate.setHours(index, 0, 0, 0);
+          timestamp = fallbackDate.getTime();
+          console.warn('Using fallback timestamp for:', item.x);
+        } else {
+          timestamp = parsedDate.getTime();
+        }
+      }
+    } else {
+      timestamp = item.x.getTime();
+    }
+    
+    return {
+      x: timestamp,
+      o: Number(item.o) || 0,
+      h: Number(item.h) || 0,
+      l: Number(item.l) || 0,
+      c: Number(item.c) || 0,
+    };
+  });
+};
+
+  // Convert volume data to proper format
+  const convertVolumeData = (data: { x: string | Date; y: number }[]) => {
+    return data.map(item => ({
+      x: typeof item.x === 'string' ? new Date(item.x).getTime() : item.x.getTime(),
+      y: item.y,
+    }));
+  };
+
   // Format price with currency symbol
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -75,13 +154,6 @@ export const ChartLine: React.FC<ChartLineProps> = ({
     return value.toString();
   };
 
-  // Calculate price change percentage for tooltip
-  const calculatePriceChange = (currentValue: number, previousValue: number) => {
-    if (!previousValue) return '0.00%';
-    const change = ((currentValue - previousValue) / previousValue) * 100;
-    return `${change > 0 ? '+' : ''}${change.toFixed(2)}%`;
-  };
-
   // Theme colors based on dark mode
   const theme = {
     backgroundColor: darkMode ? '#1e1e2f' : 'white',
@@ -90,17 +162,17 @@ export const ChartLine: React.FC<ChartLineProps> = ({
     tooltipBackground: darkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)',
     tooltipBorder: darkMode ? '#555' : '#ddd',
   };
-  // Find maximum volume value
-  const maxVolume = volumeData ? Math.max(...volumeData) : 0;
+
+  // Convert data to proper format
+  const financialData = convertToFinancialData(ohlcData);
+  const convertedVolumeData = volumeData ? convertVolumeData(volumeData) : undefined;
+
+  console.log('Converted financial data:', financialData);
+  console.log('Converted volume data:', convertedVolumeData);
+
   
-  // Create a fixed maximum for Y1 axis that will be 20 times larger than the maximum volume
-  // This will allow the bars to occupy only 5% of the chart height
-  const volumeAxisMax = maxVolume / volumeScale;
-  
-  // Use original volume data without scaling - we'll set a fixed maximum for Y1 axis instead
-  const scaledVolumeData = volumeData ? [...volumeData] : [];
   // Chart configuration
-  const options: ChartOptions<'line'> = {
+  const options: ChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -143,37 +215,105 @@ export const ChartLine: React.FC<ChartLineProps> = ({
         borderWidth: 1,
         padding: 12,
         cornerRadius: 6,
-        displayColors: true,
+        displayColors: false,
         callbacks: {
+          title: (context) => {
+            const dataPoint = context[0];
+            if (dataPoint && dataPoint.parsed && dataPoint.parsed.x) {
+              try {
+                const date = new Date(dataPoint.parsed.x);
+                if (isNaN(date.getTime())) {
+                  return 'Invalid Date';
+                }
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
+                  hour: '2-digit', 
+                  minute: '2-digit' 
+                });
+              } catch (error) {
+                console.error('Error formatting tooltip date:', error);
+                return 'Date Error';
+              }
+            }
+            return '';
+          },
           label: (context) => {
-            const value = context.raw as number;
-            const datasetLabel = context.dataset.label || '';
-            
-            if (datasetLabel === 'Volume') {              // Show original volume value, not the scaled one
-              const originalValue = volumeData ? volumeData[context.dataIndex] : 0;
-              return `${datasetLabel}: ${originalValue.toLocaleString()} USD`;
+            try {
+              const data = context.parsed as any;
+              if (data && typeof data.o !== 'undefined') {
+                const change = data.c - data.o;
+                const changePercent = data.o !== 0 ? ((change / data.o) * 100).toFixed(2) : '0.00';
+                const changeSymbol = change >= 0 ? '+' : '';
+                
+                return [
+                  `Open: ${formatPrice(data.o)}`,
+                  `High: ${formatPrice(data.h)}`,
+                  `Low: ${formatPrice(data.l)}`,
+                  `Close: ${formatPrice(data.c)}`,
+                  `Change: ${changeSymbol}${formatPrice(change)} (${changeSymbol}${changePercent}%)`,
+                ];
+              }
+              return [`Value: ${formatPrice(context.parsed.y)}`];
+            } catch (error) {
+              console.error('Error formatting tooltip label:', error);
+              return ['Error formatting data'];
             }
-            
-            // Add price change percentage if not the first point
-            if (context.dataIndex > 0) {
-              const previousValue = priceData[context.dataIndex - 1];
-              const changePercent = calculatePriceChange(value, previousValue);
-              return [`${datasetLabel}: ${formatPrice(value)}`, `Change: ${changePercent}`];
-            }
-            
-            return `${datasetLabel}: ${formatPrice(value)}`;
           },
         },
       },
     },
     scales: {
+  x: {
+    type: 'time',
+    adapters: {
+      date: {
+        locale: enUS,
+      },
+    },
+    time: {
+      unit: 'hour',
+      stepSize: 1,
+      displayFormats: {
+        hour: 'HH:mm',
+        day: 'MMM dd',
+      },
+      tooltipFormat: 'PPp',
+      parser: false,
+    },
+    // Устанавливаем точные границы
+    min: financialData.length > 0 ? Math.min(...financialData.map(d => d.x)) : undefined,
+    max: financialData.length > 0 ? Math.max(...financialData.map(d => d.x)) : undefined,
+    grid: {
+      display: showGrid,
+      color: theme.gridColor,
+    },
+    ticks: {
+      color: theme.textColor,
+      maxRotation: 45,
+      minRotation: 0,
+      // Ключевые настройки для точного соответствия данным
+      source: 'data', // Берем метки только из данных
+      maxTicksLimit: financialData.length, // Максимум меток = количеству данных
+      autoSkip: false, // Не пропускаем метки автоматически
+      font: {
+        family: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+      },
+    },
+    title: {
+      display: true,
+      text: 'Time',
+      color: theme.textColor,
+      font: {
+        family: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+        size: 12,
+      },
+    },
+  },
       y: {
         beginAtZero: false,
         position: 'right',
         grid: {
           display: showGrid,
           color: theme.gridColor,
-          drawBorder: false,
         },
         ticks: {
           color: theme.textColor,
@@ -194,35 +334,10 @@ export const ChartLine: React.FC<ChartLineProps> = ({
           },
         },
       },
-      x: {
-        grid: {
-          display: showGrid,
-          color: theme.gridColor,
-          drawBorder: false,
-        },
-        ticks: {
-          color: theme.textColor,
-          maxRotation: 45,
-          minRotation: 0,
-          font: {
-            family: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-          },
-        },
-        title: {
-          display: true,
-          text: 'Time',
-          color: theme.textColor,
-          font: {
-            family: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-            size: 12,
-          },
-        },
-      },
       // Optional volume scale
-      ...(showVolume && volumeData ? {
+      ...(showVolume && convertedVolumeData ? {
         y1: {
           type: 'linear' as const,
-
           position: 'left' as const,
           grid: {
             display: false,
@@ -232,143 +347,69 @@ export const ChartLine: React.FC<ChartLineProps> = ({
             callback: (value) => {
               return formatVolume(value as number);
             },
-            // Hide tick labels on Y1 axis to avoid showing huge values
-            display: false
           },
           title: {
             display: true,
             text: 'Volume',
             color: theme.textColor,
           },
-          // Set fixed maximum for Y1 axis
-          max: volumeAxisMax,
-          // Start from zero for volume bars
           beginAtZero: true,
-          // Hide the axis itself
-          display: false
         },
       } : {}),
     },
-    elements: {
-      point: {
-        radius: 2,
-        hoverRadius: 5,
-        hitRadius: 30,
-        borderWidth: 2,
+  };
+
+// Chart data with proper structure for candlestick
+const data: ChartData = {
+  datasets: [
+  {
+      label: 'Price',
+      type: 'candlestick',
+      data: financialData,
+      borderColor: wickColor,
+      backgroundColor: 'transparent',
+      borderColors: {
+        up: upColor,
+        down: downColor,
+        unchanged: '#999999',
       },
-      line: {
-        tension: 0.2, // Smoother line
-        borderWidth: 2,
-        fill: showGradient ? 'start' : false,
-        borderJoinStyle: 'round',
+      backgroundColors: {
+        up: upColor,
+        down: downColor,
+        unchanged: '#999999',
       },
+      borderWidth: 1,
+      borderSkipped: false,
+      // Добавляем настройки для размера свечей
+      barPercentage: 0.6,
+      categoryPercentage: 0.8,
     },
-  };
-
-  // Create gradient background if enabled
-  const createGradient = (ctx: CanvasRenderingContext2D, color: string) => {
-    if (!showGradient) return color;
-    
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    
-    // Properly handle different color formats
-    let startColor, endColor;
-    
-    if (color.startsWith('rgb(')) {
-      // Format rgb(r, g, b)
-      const rgbValues = color.match(/\d+/g);
-      if (rgbValues && rgbValues.length >= 3) {
-        startColor = `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, 0.8)`;
-        endColor = `rgba(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]}, 0.1)`;
-      } else {
-        // If RGB values couldn't be extracted, use default color
-        startColor = 'rgba(53, 162, 235, 0.8)';
-        endColor = 'rgba(53, 162, 235, 0.1)';
-      }
-    } else if (color.startsWith('rgba(')) {
-      // Format rgba(r, g, b, a)
-      const rgbaValues = color.match(/\d+(\.\d+)?/g);
-      if (rgbaValues && rgbaValues.length >= 4) {
-        startColor = `rgba(${rgbaValues[0]}, ${rgbaValues[1]}, ${rgbaValues[2]}, 0.8)`;
-        endColor = `rgba(${rgbaValues[0]}, ${rgbaValues[1]}, ${rgbaValues[2]}, 0.1)`;
-      } else {
-        startColor = 'rgba(53, 162, 235, 0.8)';
-        endColor = 'rgba(53, 162, 235, 0.1)';
-      }
-    } else if (color.startsWith('#')) {
-      // Format #RRGGBB or #RGB
-      // Convert HEX to RGB
-      let r, g, b;
-      
-      if (color.length === 4) {
-        // #RGB format
-        r = parseInt(color[1] + color[1], 16);
-        g = parseInt(color[2] + color[2], 16);
-        b = parseInt(color[3] + color[3], 16);
-      } else {
-        // #RRGGBB format
-        r = parseInt(color.slice(1, 3), 16);
-        g = parseInt(color.slice(3, 5), 16);
-        b = parseInt(color.slice(5, 7), 16);
-      }
-      
-      startColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
-      endColor = `rgba(${r}, ${g}, ${b}, 0.1)`;
-    } else {
-      // For other formats use default color
-      startColor = 'rgba(53, 162, 235, 0.8)';
-      endColor = 'rgba(53, 162, 235, 0.1)';
-    }
-    
-    // Add color stops with proper color formats
-    gradient.addColorStop(0, startColor);
-    gradient.addColorStop(1, endColor);
-    
-    return gradient;
-  };
-
-
-
-  // Chart data
-  const data = {
-    labels,
-    datasets: [
+    ...(showVolume && convertedVolumeData ? [
       {
-        label: 'Price',
-        data: priceData,
-        borderColor: borderColor,
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx;
-          return createGradient(ctx, backgroundColor);
-        },
-        yAxisID: 'y',
-        pointBackgroundColor: borderColor,
-        pointBorderColor: darkMode ? '#1e1e2f' : 'white',
-        pointHoverBackgroundColor: 'white',
-        pointHoverBorderColor: borderColor,
-        pointHoverBorderWidth: 2,
-        fill: true,
-        type: 'line', // Explicitly specify the chart type
+        label: 'Volume',
+        type: 'bar' as const,
+        data: convertedVolumeData,
+        backgroundColor: 'rgba(128, 128, 128, 0.3)',
+        borderColor: 'rgba(128, 128, 128, 0.5)',
+        borderWidth: 1,
+        yAxisID: 'y1',
+        order: 1,
+        barPercentage: 0.8,
       },
-      ...(showVolume && volumeData ? [
-        {
-          label: 'Volume',
-          data: scaledVolumeData,
-          type: 'bar',
-          backgroundColor: 'rgba(128, 128, 128, 0.5)',
-          borderColor: 'rgba(128, 128, 128, 0.5)',
-          borderWidth: 1,
-          yAxisID: 'y1',
-          order: 1,
-          barPercentage: 0.5, // Bar width relative to available space
-        },
-      ] : []),
-    ],
-  };
+    ] : []),
+  ],
+};
+
+  console.log('Final chart data structure:', data);
 
   return (
-    <div className={`crypto-chart-container ${darkMode ? 'dark-mode' : ''}`}>
-      <Line options={options} data={data} />
+    <div className={`crypto-chart-container ${darkMode ? 'dark-mode' : ''}`} style={{ height: '400px', width: '100%' }}>
+      <Chart 
+        type="candlestick" 
+        options={options} 
+        data={data}
+        height={400}
+      />
     </div>
   );
 };

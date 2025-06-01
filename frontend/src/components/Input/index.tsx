@@ -2,10 +2,17 @@ import { useState } from 'react';
 import styles from './index.module.scss';
 import { FaEyeSlash } from 'react-icons/fa';
 import { FaEye } from 'react-icons/fa';
-const EyePassowrdBtn = ({showPassword, togglePassword, }: {showPassword: boolean; togglePassword: any}) => {
 
+const EyePassowrdBtn = ({
+	showPassword,
+	togglePassword
+}: {
+	showPassword: boolean;
+	togglePassword: () => void;
+}) => {
 	return (
 		<button
+			type="button"
 			className={styles.eyePasswordBtn}
 			onClick={togglePassword}
 		>
@@ -28,9 +35,9 @@ export const Input = ({
 	id: string;
 	name: string;
 }) => {
-		const [showPassword, setShowPassword] = useState(false);
-		const togglePassword = () => setShowPassword(!showPassword)
-		const currentType = type === 'password' && showPassword? 'text' : type
+	const [showPassword, setShowPassword] = useState(false);
+	const togglePassword = () => setShowPassword(!showPassword);
+	const currentType = type === 'password' && showPassword ? 'text' : type;
 	return (
 		<div className={styles.inputContainer}>
 			<label htmlFor={id}>{id}</label>
@@ -45,7 +52,10 @@ export const Input = ({
 			/>
 			{type === 'password' ?
 				<div className={styles.eyePassword}>
-					<EyePassowrdBtn showPassword={showPassword} togglePassword={togglePassword}/>
+					<EyePassowrdBtn
+						showPassword={showPassword}
+						togglePassword={togglePassword}
+					/>
 				</div>
 			:	''}
 		</div>

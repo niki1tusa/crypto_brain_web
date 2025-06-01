@@ -1,6 +1,6 @@
 import { log } from "console";
 import { trpc } from "../../../lib/trpc";
-import { hashedPasswordFnc } from "../../../utils/hashedPassword";
+import { hashedPasswordFnc } from "../../../utils/getPasswordHash";
 import { tokenSign } from "../../../utils/jwtToken";
 import { zodSchemaSignUp } from "./input";
 

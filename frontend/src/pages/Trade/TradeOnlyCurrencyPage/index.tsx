@@ -17,7 +17,6 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
   const [volumeData, setVolumeData] = useState<number[]>([]);
   const [chartReady, setChartReady] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('buysell');
-  const volumeScale = 0.2;
   
   // Convert id from string to number
   const numId = id ? parseInt(id, 10) : 0;
@@ -47,7 +46,10 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
       date.setHours(date.getHours() - i);
       date.setMinutes(0);
       date.setSeconds(0);
-      labels.push(date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      date.setMilliseconds(0);
+      
+    // Возвращаем ISO строку, округленную до часа
+    labels.push(date.toISOString());
     }
     
     return labels;
@@ -118,14 +120,7 @@ export const TradeOnlyCurrencyPage: React.FC = () => {
       
       <section className={styles.chartSection}>
         {chartReady ? (
-          <EnhancedChartLine
-            priceData={priceChart} 
-            labels={dateLabels}
-            title={`${result.name} Price History (24h)`}
-            volumeData={volumeData}
-            initialDarkMode={true}
-            volumeScale={volumeScale}
-          />
+          <EnhancedChartLine priceData={priceChart} labels={dateLabels}  volumeData={volumeData}/>
         ) : (
           <div className="chart-loading">
             Preparing chart data...

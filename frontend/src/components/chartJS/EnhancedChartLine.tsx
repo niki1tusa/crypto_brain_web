@@ -1,67 +1,146 @@
-import React, { useState } from 'react';
-import { ChartLine } from './index';
+import React, { useState, useMemo } from 'react';
 import './ChartLine.scss';
+import { CandlestickChart } from './index';
+
+// OHLC data interface
+interface OHLCData {
+  x: string | Date;
+  o: number; // Open
+  h: number; // High
+  l: number; // Low
+  c: number; // Close
+}
 
 interface EnhancedChartLineProps {
-  priceData: number[];
-  labels: string[];
+  // Option 1: Direct OHLC data
+  ohlcData?: OHLCData[];
+  
+  // Option 2: Simple price data (will be converted to OHLC)
+  priceData?: number[];
+  labels?: string[];
+  
   title?: string;
   volumeData?: number[];
   initialDarkMode?: boolean;
-  volumeColors?: string[];
-  trendColor?: string;
-  volumeScale?: number; // Parameter to control volume bar height
+  upColor?: string;
+  downColor?: string;
+  wickColor?: string;
 }
 
 export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
+  ohlcData,
   priceData = [],
   labels = [],
   title = 'Cryptocurrency Price Chart',
   volumeData,
   initialDarkMode = true,
-  volumeScale = 0.3, // Default to 30% of original height
 }) => {
   // State for chart options
   const [darkMode, setDarkMode] = useState(initialDarkMode);
   const [showGrid, setShowGrid] = useState(false);
-  const [showGradient, setShowGradient] = useState(true);
   const [showVolume, setShowVolume] = useState(!!volumeData);
   
-  // Color themes
-  const themes = {
-    blue: {
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+  // Color themes for candlesticks
+  const colorThemes = {
+    classic: {
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      wickColor: '#757575',
     },
-    green: {
-      borderColor: 'rgb(75, 192, 192)',
-      backgroundColor: 'rgba(75, 192, 192, 0.5)',
+    neon: {
+      upColor: '#00ff88',
+      downColor: '#ff4444',
+      wickColor: '#888888',
+    },
+    blue: {
+      upColor: '#4fc3f7',
+      downColor: '#f06292',
+      wickColor: '#90a4ae',
     },
     purple: {
-      borderColor: 'rgb(153, 102, 255)',
-      backgroundColor: 'rgba(153, 102, 255, 0.5)',
-    },
-    orange: {
-      borderColor: 'rgb(255, 159, 64)',
-      backgroundColor: 'rgba(255, 159, 64, 0.5)',
+      upColor: '#ba68c8',
+      downColor: '#ff8a65',
+      wickColor: '#9e9e9e',
     },
   };
   
-  const [colorTheme, setColorTheme] = useState<keyof typeof themes>('blue');
+  const [colorTheme, setColorTheme] = useState<keyof typeof colorThemes>('classic');
   
-  // Check if priceData array is not empty before calculating stats
-  const hasData = priceData && priceData.length > 0;
+  // Convert simple price data to OHLC format
+  const convertToOHLC = useMemo((): OHLCData[] => {
+    if (ohlcData && ohlcData.length > 0) {
+      return ohlcData;
+    }
+    
+    if (!priceData || priceData.length === 0 || labels.length === 0) {
+      return [];
+    }
+    
+    const today = new Date();
+    
+    return priceData.map((price, index) => {
+      const variation = price * 0.02;
+      const open = index === 0 ? price : priceData[index - 1];
+      const close = price;
+      const high = Math.max(open, close) + Math.random() * variation;
+      const low = Math.min(open, close) - Math.random() * variation;
+      
+      const label = labels[index];
+      let dateString: string;
+      console.log(label);
+      if (label && label.match(/^\d{2}:\d{2}$/)) {
+        // Формат "21:00"
+        const [hours, minutes] = label.split(':').map(Number);
+        const date = new Date(today);
+        date.setHours(hours, minutes, 0, 0);
+        dateString = date.toISOString();
+      }  else {
+        // Пытаемся парсить как ISO или создаем fallback
+        const parsedDate = new Date(label);
+        if (isNaN(parsedDate.getTime())) {
+          const fallbackDate = new Date(today);
+          fallbackDate.setHours(fallbackDate.getHours() - (labels.length - 1 - index));
+          dateString = fallbackDate.toISOString();
+        } else {
+          dateString = parsedDate.toISOString();
+        }
+      }
+      
+      return {
+        x: dateString,
+        o: Number(open.toFixed(2)),
+        h: Number(high.toFixed(2)),
+        l: Number(low.toFixed(2)),
+        c: Number(close.toFixed(2)),
+      };
+    });
+  }, [ohlcData, priceData, labels]);
+  
+  // Convert volume data to chart format
+  const formattedVolumeData = useMemo(() => {
+    if (!volumeData || volumeData.length === 0) return undefined;
+    
+    return volumeData.map((volume, index) => ({
+      x: labels[index] || new Date().toISOString(),
+      y: volume,
+    }));
+  }, [volumeData, labels]);
+  
+  // Check if we have data to render
+  const hasData = convertToOHLC.length > 0;
   
   // Calculate price stats with safety checks
-  const currentPrice = hasData ? priceData[priceData.length - 1] : 0;
-  const firstPrice = hasData ? priceData[0] : 0;
+  const currentCandle = hasData ? convertToOHLC[convertToOHLC.length - 1] : null;
+  const firstCandle = hasData ? convertToOHLC[0] : null;
+  const currentPrice = currentCandle?.c || 0;
+  const firstPrice = firstCandle?.o || 0;
   const priceChange = hasData ? currentPrice - firstPrice : 0;
   const priceChangePercent = hasData && firstPrice !== 0 ? (priceChange / firstPrice) * 100 : 0;
-  const highPrice = hasData ? Math.max(...priceData) : 0;
-  const lowPrice = hasData ? Math.min(...priceData) : 0;
+  const highPrice = hasData ? Math.max(...convertToOHLC.map(d => d.h)) : 0;
+  const lowPrice = hasData ? Math.min(...convertToOHLC.map(d => d.l)) : 0;
   
   // Check if we have enough data to render the chart
-  if (!hasData || labels.length === 0) {
+  if (!hasData) {
     return (
       <div className="enhanced-chart-container">
         <div className="chart-loading">
@@ -78,7 +157,7 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
           className={`control-button ${darkMode ? 'dark-mode' : ''} ${darkMode ? 'active' : ''}`}
           onClick={() => setDarkMode(!darkMode)}
         >
-          {darkMode ? '🌙 Dark': '☀️ Light'  }
+          {darkMode ? '🌙 Dark': '☀️ Light'}
         </button>
         
         <button 
@@ -86,13 +165,6 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
           onClick={() => setShowGrid(!showGrid)}
         >
           {showGrid ? 'Hide Grid' : 'Show Grid'}
-        </button>
-        
-        <button 
-          className={`control-button ${darkMode ? 'dark-mode' : ''} ${showGradient ? 'active' : ''}`}
-          onClick={() => setShowGradient(!showGradient)}
-        >
-          {showGradient ? 'Solid Fill' : 'Gradient Fill'}
         </button>
         
         {volumeData && volumeData.length > 0 && (
@@ -107,27 +179,25 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
         <select 
           className={`control-button ${darkMode ? 'dark-mode' : ''}`}
           value={colorTheme}
-          onChange={(e) => setColorTheme(e.target.value as keyof typeof themes)}
+          onChange={(e) => setColorTheme(e.target.value as keyof typeof colorThemes)}
         >
+          <option value="classic">Classic</option>
+          <option value="neon">Neon</option>
           <option value="blue">Blue</option>
-          <option value="green">Green</option>
           <option value="purple">Purple</option>
-          <option value="orange">Orange</option>
         </select>
       </div>
       
-      <ChartLine 
-        priceData={priceData}
-        labels={labels}
+      <CandlestickChart
+        ohlcData={convertToOHLC}
         title={title}
-        borderColor={themes[colorTheme].borderColor}
-        backgroundColor={themes[colorTheme].backgroundColor}
         showGrid={showGrid}
-        showGradient={showGradient}
         darkMode={darkMode}
-        showVolume={showVolume && !!volumeData && volumeData.length > 0}
-        volumeData={volumeData}
-        volumeScale={volumeScale}
+        showVolume={showVolume && !!formattedVolumeData}
+        volumeData={formattedVolumeData}
+        upColor={colorThemes[colorTheme].upColor}
+        downColor={colorThemes[colorTheme].downColor}
+        wickColor={colorThemes[colorTheme].wickColor}
       />
       
       <div className={`chart-info ${darkMode ? 'dark-mode' : ''}`}>
@@ -152,6 +222,18 @@ export const EnhancedChartLine: React.FC<EnhancedChartLineProps> = ({
             <span className="stat-label">Low:</span>
             <span className="stat-value">${lowPrice.toFixed(2)}</span>
           </div>
+          {currentCandle && (
+            <>
+              <div className="stat-item">
+                <span className="stat-label">Open:</span>
+                <span className="stat-value">${currentCandle.o.toFixed(2)}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Close:</span>
+                <span className="stat-value">${currentCandle.c.toFixed(2)}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

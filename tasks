@@ -2,8 +2,6 @@
 *улучшить читабельность frontend archicture and  create frontend reuse component
 *upgrade Layout component
 *доверстать homePage
-*при нажатии на глаз пароля форма отправляется
 *create profile component/page with wallet(balance)/active
 *tradeOnlyCurrencyPage: 
-- сделать ущё одну вариацию графика, но со свечами
 - отображать спава: стакан, динамику за разные периоды как на trading view 
